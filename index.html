@@ -3,57 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sheet Music Trainer</title>
-    <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.2/build/cjs/vexflow.js"></script>
+    <title>Piano Music Trainer</title>
+    <script src="https://jsdelivr.net"></script>
     <style>
-        :root { --primary: #2563eb; --bg: #f8fafc; --text: #1e293b; }
-        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        :root { --primary: #2563eb; --bg: #f8fafc; --text: #1e293b; --white-key: #ffffff; --black-key: #1e293b; }
+        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
         .container { max-width: 600px; width: 100%; }
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); margin-bottom: 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 10px; margin-top: 20px; }
-        button { padding: 15px; border: none; border-radius: 8px; background: var(--primary); color: white; font-weight: bold; cursor: pointer; touch-action: manipulation; font-size: 1.1rem; }
-        button:active { transform: scale(0.95); opacity: 0.9; }
-        #canvas-container { background: white; border-radius: 8px; margin: 20px 0; width: 100%; display: flex; justify-content: center; overflow: hidden; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); margin-bottom: 15px; }
+        .nav-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        button { padding: 12px; border: none; border-radius: 8px; background: var(--primary); color: white; font-weight: bold; cursor: pointer; touch-action: manipulation; }
+        .btn-inactive { background: #e2e8f0; color: #475569; }
+        
+        /* Piano Keyboard Visual */
+        .keyboard { display: flex; justify-content: center; position: relative; height: 100px; margin: 15px 0; background: #000; padding: 2px; border-radius: 4px; }
+        .key { width: 30px; height: 100%; background: white; border: 1px solid #ccc; border-radius: 0 0 3px 3px; position: relative; display: flex; align-items: flex-end; justify-content: center; font-size: 10px; padding-bottom: 5px; box-sizing: border-box; }
+        .black { background: black; width: 18px; height: 60%; margin-left: -9px; margin-right: -9px; z-index: 2; border: none; color: white; }
+        
+        #canvas-container { background: white; border-radius: 8px; margin: 10px 0; width: 100%; display: flex; justify-content: center; overflow: hidden; }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 15px; }
         .hidden { display: none; }
-        nav { display: flex; gap: 10px; margin-bottom: 20px; width: 100%; }
-        .nav-btn { flex: 1; background: #e2e8f0; color: #475569; }
-        .nav-btn.active { background: var(--primary); color: white; }
-        h3 { margin-top: 0; color: var(--primary); }
+        .clef-toggle { margin-bottom: 10px; display: flex; gap: 5px; }
+        .active-clef { border: 2px solid var(--primary); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Music Trainer 🎼</h1>
+    <h1>Piano Trainer 🎹</h1>
     
-    <nav>
-        <button class="nav-btn active" onclick="showTab('learn')">Learn</button>
-        <button class="nav-btn" onclick="showTab('practice')">Practice</button>
-    </nav>
+    <div class="nav-grid">
+        <button id="btn-learn" onclick="showTab('learn')">Learn</button>
+        <button id="btn-practice" class="btn-inactive" onclick="showTab('practice')">Practice</button>
+    </div>
 
     <div id="learn-tab">
         <div class="card">
-            <h3>Beginner</h3>
-            <p><strong>The Staff:</strong> The 5 lines and 4 spaces where notes are placed.</p>
-            <p><strong>Treble Clef:</strong> Used for high-pitched instruments like the violin or flute.</p>
-            <p><em>Tip:</em> Spaces spell <strong>FACE</strong>. Lines are <strong>E</strong>very <strong>G</strong>ood <strong>B</strong>oy <strong>D</strong>oes <strong>F</strong>ine.</p>
+            <h3>Beginner: The Grand Staff</h3>
+            <p>Pianists read two staves at once. The top is <strong>Treble Clef</strong> (Right Hand) and the bottom is <strong>Bass Clef</strong> (Left Hand).</p>
+            <div class="keyboard">
+                <div class="key">C</div><div class="key black"></div><div class="key">D</div><div class="key black"></div><div class="key">E</div><div class="key">F</div><div class="key black"></div><div class="key">G</div><div class="key black"></div><div class="key">A</div><div class="key black"></div><div class="key">B</div><div class="key">C</div>
+            </div>
+            <p><em>Landmark:</em> <strong>Middle C</strong> sits on a small "ledger line" between the two staves.</p>
         </div>
         <div class="card">
-            <h3>Intermediate</h3>
-            <p><strong>Ledger Lines:</strong> Extra lines drawn above or below the staff for very high or low notes.</p>
-            <p><strong>Accidentals:</strong> <strong>Sharps (♯)</strong> raise a note by a half-step; <strong>Flats (♭)</strong> lower it.</p>
-        </div>
-        <div class="card">
-            <h3>Advanced</h3>
-            <p><strong>Bass Clef:</strong> Used for low-pitched instruments like the cello or tuba.</p>
-            <p><strong>Key Signatures:</strong> A set of sharps or flats at the beginning of a piece that tells you which notes to change throughout.</p>
+            <h3>Intermediate: Intervals</h3>
+            <p>Instead of reading every note, pianists look for <strong>Intervals</strong> (distances). A 2nd is the next white key, a 3rd skips one.</p>
         </div>
     </div>
 
     <div id="practice-tab" class="hidden">
+        <div class="clef-toggle">
+            <button id="toggle-treble" onclick="setClef('treble')">Treble Clef</button>
+            <button id="toggle-bass" class="btn-inactive" onclick="setClef('bass')">Bass Clef</button>
+        </div>
         <div class="card" style="text-align: center;">
             <div id="canvas-container"></div>
-            <p id="feedback" style="font-weight: bold; font-size: 1.2rem;">What note is this?</p>
+            <p id="feedback">Identify the note</p>
             <div class="grid" id="note-buttons"></div>
         </div>
     </div>
@@ -61,30 +66,47 @@
 
 <script>
     const { Renderer, Stave, StaveNote, Voice, Formatter } = Vex.Flow;
-    const notes = ['C/4', 'D/4', 'E/4', 'F/4', 'G/4', 'A/4', 'B/4', 'C/5', 'D/5', 'E/5'];
-    const noteNames = ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'C', 'D', 'E'];
+    let currentClef = 'treble';
     let currentNote = '';
+    
+    const trebleRange = [
+        {key: 'C/4', name: 'C'}, {key: 'D/4', name: 'D'}, {key: 'E/4', name: 'E'}, 
+        {key: 'F/4', name: 'F'}, {key: 'G/4', name: 'G'}, {key: 'A/4', name: 'A'}, {key: 'B/4', name: 'B'}, {key: 'C/5', name: 'C'}
+    ];
+    const bassRange = [
+        {key: 'C/3', name: 'C'}, {key: 'D/3', name: 'D'}, {key: 'E/3', name: 'E'}, 
+        {key: 'F/3', name: 'F'}, {key: 'G/3', name: 'G'}, {key: 'A/3', name: 'A'}, {key: 'B/3', name: 'B'}, {key: 'C/4', name: 'C'}
+    ];
 
     function showTab(tab) {
         document.getElementById('learn-tab').classList.toggle('hidden', tab !== 'learn');
         document.getElementById('practice-tab').classList.toggle('hidden', tab !== 'practice');
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.innerText.toLowerCase() === tab));
+        document.getElementById('btn-learn').classList.toggle('btn-inactive', tab !== 'learn');
+        document.getElementById('btn-practice').classList.toggle('btn-inactive', tab !== 'practice');
         if(tab === 'practice') drawNote();
+    }
+
+    function setClef(clef) {
+        currentClef = clef;
+        document.getElementById('toggle-treble').classList.toggle('btn-inactive', clef !== 'treble');
+        document.getElementById('toggle-bass').classList.toggle('btn-inactive', clef !== 'bass');
+        drawNote();
     }
 
     function drawNote() {
         const container = document.getElementById('canvas-container');
         container.innerHTML = '';
         const renderer = new Renderer(container, Renderer.Backends.SVG);
-        renderer.resize(250, 150);
+        renderer.resize(200, 140);
         const context = renderer.getContext();
-        const stave = new Stave(25, 20, 200);
-        stave.addClef("treble").setContext(context).draw();
+        const stave = new Stave(10, 10, 180);
+        stave.addClef(currentClef).setContext(context).draw();
 
-        const randomIndex = Math.floor(Math.random() * notes.length);
-        currentNote = noteNames[randomIndex];
+        const range = currentClef === 'treble' ? trebleRange : bassRange;
+        const noteObj = range[Math.floor(Math.random() * range.length)];
+        currentNote = noteObj.name;
         
-        const visualNote = new StaveNote({ keys: [notes[randomIndex]], duration: "q" });
+        const visualNote = new StaveNote({ clef: currentClef, keys: [noteObj.key], duration: "q" });
         const voice = new Voice({ num_beats: 1, beat_value: 4 });
         voice.addTickables([visualNote]);
         
@@ -95,19 +117,14 @@
     function checkAnswer(guess) {
         const feedback = document.getElementById('feedback');
         if(guess === currentNote) {
-            feedback.style.color = "#16a34a";
-            feedback.innerText = "Correct! ✨";
-            setTimeout(() => {
-                feedback.style.color = "#1e293b";
-                feedback.innerText = "What note is this?";
-                drawNote();
-            }, 800);
+            feedback.innerHTML = "<span style='color:green'>Correct! 🎹</span>";
+            setTimeout(() => { feedback.innerText = "Identify the note"; drawNote(); }, 700);
         } else {
-            feedback.style.color = "#dc2626";
-            feedback.innerText = "Try again!";
+            feedback.innerHTML = "<span style='color:red'>Try again</span>";
         }
     }
 
+    // Build buttons
     const btnContainer = document.getElementById('note-buttons');
     ['C', 'D', 'E', 'F', 'G', 'A', 'B'].forEach(note => {
         const btn = document.createElement('button');
