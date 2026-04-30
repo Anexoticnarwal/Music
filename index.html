@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Piano Music Trainer</title>
-    <script src="https://jsdelivr.net"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.2/build/vexflow.min.js"></script>
     <style>
         :root { --primary: #2563eb; --bg: #f8fafc; --text: #1e293b; --white-key: #ffffff; --black-key: #1e293b; }
         body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
@@ -16,7 +16,7 @@
         
         /* Piano Keyboard Visual */
         .keyboard { display: flex; justify-content: center; position: relative; height: 100px; margin: 15px 0; background: #000; padding: 2px; border-radius: 4px; }
-        .key { width: 30px; height: 100%; background: white; border: 1px solid #ccc; border-radius: 0 0 3px 3px; position: relative; display: flex; align-items: flex-end; justify-content: center; font-size: 10px; padding-bottom: 5px; box-sizing: border-box; }
+        .key { width: 30px; height: 100%; background: white; border: 1px solid #ccc; border-radius: 0 0 3px 3px; position: relative; display: flex; align-items: flex-end; justify-content: center; font-size: 10px; font-weight: bold; }
         .black { background: black; width: 18px; height: 60%; margin-left: -9px; margin-right: -9px; z-index: 2; border: none; color: white; }
         
         #canvas-container { background: white; border-radius: 8px; margin: 10px 0; width: 100%; display: flex; justify-content: center; overflow: hidden; }
@@ -24,6 +24,10 @@
         .hidden { display: none; }
         .clef-toggle { margin-bottom: 10px; display: flex; gap: 5px; }
         .active-clef { border: 2px solid var(--primary); }
+        .tip { background: #eff6ff; border-left: 4px solid var(--primary); padding: 12px; margin: 10px 0; border-radius: 4px; }
+        .tip strong { color: var(--primary); }
+        ul { margin: 10px 0; padding-left: 20px; }
+        li { margin: 5px 0; line-height: 1.6; }
     </style>
 </head>
 <body>
@@ -41,13 +45,65 @@
             <h3>Beginner: The Grand Staff</h3>
             <p>Pianists read two staves at once. The top is <strong>Treble Clef</strong> (Right Hand) and the bottom is <strong>Bass Clef</strong> (Left Hand).</p>
             <div class="keyboard">
-                <div class="key">C</div><div class="key black"></div><div class="key">D</div><div class="key black"></div><div class="key">E</div><div class="key">F</div><div class="key black"></div><div class="key">G</div><div class="key black"></div><div class="key">A</div><div class="key black"></div><div class="key">B</div><div class="key">C</div>
+                <div class="key">C</div><div class="key black"></div><div class="key">D</div><div class="key black"></div><div class="key">E</div><div class="key">F</div><div class="key black"></div><div class="key">G</div><div class="key black"></div><div class="key">A</div><div class="key black"></div><div class="key">B</div>
             </div>
             <p><em>Landmark:</em> <strong>Middle C</strong> sits on a small "ledger line" between the two staves.</p>
+            
+            <div class="tip">
+                <strong>💡 Tip:</strong> Every Good Boy Does Fine (Treble Clef lines: E, G, B, D, F). The spaces spell FACE.
+            </div>
         </div>
+
         <div class="card">
             <h3>Intermediate: Intervals</h3>
             <p>Instead of reading every note, pianists look for <strong>Intervals</strong> (distances). A 2nd is the next white key, a 3rd skips one.</p>
+            <ul>
+                <li><strong>2nd:</strong> Adjacent notes (C to D)</li>
+                <li><strong>3rd:</strong> Skip one note (C to E)</li>
+                <li><strong>4th:</strong> Skip two notes (C to F)</li>
+                <li><strong>5th:</strong> Skip three notes (C to G)</li>
+            </ul>
+            <div class="tip">
+                <strong>💡 Tip:</strong> Use your fingers to count on the staff. Put one finger on each line and space to keep track of intervals.
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Advanced: Reading Faster</h3>
+            <p>Professional musicians use these techniques to sight-read quickly:</p>
+            <ul>
+                <li><strong>Chunking:</strong> Group notes into patterns rather than reading individually</li>
+                <li><strong>Hand Position:</strong> Your hand naturally covers an octave—use this reference point</li>
+                <li><strong>Look Ahead:</strong> Always scan 1-2 measures ahead while playing</li>
+                <li><strong>Anchor Notes:</strong> Memorize a few landmarks (like Middle C) to navigate faster</li>
+            </ul>
+            <div class="tip">
+                <strong>💡 Tip:</strong> Practice reading without playing. Your eyes should always be slightly ahead of your fingers.
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Bass Clef Basics</h3>
+            <p>The Bass Clef (left hand) uses a different notation system:</p>
+            <ul>
+                <li><strong>Lines (bottom to top):</strong> G, B, D, F, A</li>
+                <li><strong>Spaces (bottom to top):</strong> A, C, E, G</li>
+                <li><strong>Memory aid:</strong> "Good Boys Do Fine Always" for lines, "All Cows Eat Grass" for spaces</li>
+            </ul>
+            <div class="tip">
+                <strong>💡 Tip:</strong> Bass clef is just treble clef moved down. Middle C appears on the ledger line above the bass staff.
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Practice Tips</h3>
+            <ul>
+                <li>Start slow—accuracy before speed</li>
+                <li>Practice one clef at a time before mixing them</li>
+                <li>Use the Practice tab daily for 5-10 minutes</li>
+                <li>Write out note names on sheet music to reinforce memory</li>
+                <li>Challenge yourself: take a real piece and name every note before playing</li>
+            </ul>
         </div>
     </div>
 
@@ -131,6 +187,13 @@
         btn.innerText = note;
         btn.onclick = () => checkAnswer(note);
         btnContainer.appendChild(btn);
+    });
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        if(typeof Vex !== 'undefined' && Vex.Flow) {
+            console.log('VexFlow loaded successfully');
+        }
     });
 </script>
 </body>
