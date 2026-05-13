@@ -2,40 +2,46 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Piano Music Trainer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Piano Pro Trainer</title>
     <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.2/build/vexflow.min.js"></script>
     <style>
-        :root { --primary: #2563eb; --bg: #f8fafc; --text: #1e293b; --white-key: #ffffff; --black-key: #1e293b; }
-        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
-        .container { max-width: 600px; width: 100%; }
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); margin-bottom: 15px; }
-        .nav-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        button { padding: 12px; border: none; border-radius: 8px; background: var(--primary); color: white; font-weight: bold; cursor: pointer; touch-action: manipulation; }
+        :root { --primary: #2563eb; --success: #22c55e; --error: #ef4444; --bg: #f8fafc; --text: #1e293b; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+        .container { max-width: 500px; width: 100%; }
+        .card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 10px; }
+        
+        /* Navigation */
+        .nav-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+        button { padding: 12px 5px; border: none; border-radius: 8px; background: var(--primary); color: white; font-weight: bold; cursor: pointer; font-size: 14px; transition: transform 0.1s; }
+        button:active { transform: scale(0.95); }
         .btn-inactive { background: #e2e8f0; color: #475569; }
+
+        /* Game UI */
+        #canvas-container { background: white; border-radius: 8px; width: 100%; display: flex; justify-content: center; min-height: 150px; touch-action: none; }
+        .stats { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 10px; font-weight: bold; }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .note-btn { background: #334155; height: 50px; font-size: 18px; }
         
-        /* Piano Keyboard Visual */
-        .keyboard { display: flex; justify-content: center; position: relative; height: 100px; margin: 15px 0; background: #000; padding: 2px; border-radius: 4px; }
-        .key { width: 30px; height: 100%; background: white; border: 1px solid #ccc; border-radius: 0 0 3px 3px; position: relative; display: flex; align-items: flex-end; justify-content: center; font-size: 12px; }
-        .black { background: black; width: 18px; height: 60%; margin-left: -9px; margin-right: -9px; z-index: 2; border: none; color: white; }
-        
-        #canvas-container { background: white; border-radius: 8px; margin: 10px 0; width: 100%; display: flex; justify-content: center; overflow: hidden; min-height: 140px; }
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 15px; }
+        /* Feedback Animations */
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        .error-shake { animation: shake 0.2s ease-in-out 2; }
+        .correct-flash { background: var(--success) !important; }
+
         .hidden { display: none; }
-        .clef-toggle { margin-bottom: 10px; display: flex; gap: 5px; }
+        .clef-toggle { display: flex; gap: 5px; margin-bottom: 10px; }
         .clef-toggle button { flex: 1; }
-        .active-clef { border: 2px solid var(--primary); }
-        .tip { background: #eff6ff; border-left: 4px solid var(--primary); padding: 12px; margin: 10px 0; border-radius: 4px; }
-        .tip strong { color: var(--primary); }
-        ul { margin: 10px 0; padding-left: 20px; }
-        li { margin: 5px 0; line-height: 1.6; }
+        
+        /* Educational Keyboard */
+        .keyboard { display: flex; height: 60px; margin: 10px 0; background: #000; padding: 1px; border-radius: 4px; overflow: hidden; }
+        .key { flex: 1; background: white; border: 1px solid #ddd; position: relative; display: flex; align-items: flex-end; justify-content: center; font-size: 10px; padding-bottom: 2px; }
+        .key.black { background: #1e293b; color: white; flex: 0.7; height: 60%; z-index: 2; margin: 0 -3.5%; border: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Piano Trainer 🎹</h1>
-    
     <div class="nav-grid">
         <button id="btn-learn" onclick="showTab('learn')">Learn</button>
         <button id="btn-practice" class="btn-inactive" onclick="showTab('practice')">Practice</button>
@@ -43,80 +49,30 @@
 
     <div id="learn-tab">
         <div class="card">
-            <h3>Beginner: The Grand Staff</h3>
-            <p>Pianists read two staves at once. The top is <strong>Treble Clef</strong> (Right Hand) and the bottom is <strong>Bass Clef</strong> (Left Hand).</p>
+            <h3 style="margin-top:0">Landmarks</h3>
+            <p>On mobile, focus on <strong>Middle C</strong>. It sits on a line between the two staves.</p>
             <div class="keyboard">
                 <div class="key">C</div><div class="key black"></div><div class="key">D</div><div class="key black"></div><div class="key">E</div><div class="key">F</div><div class="key black"></div><div class="key">G</div><div class="key black"></div><div class="key">A</div><div class="key black"></div><div class="key">B</div><div class="key">C</div>
             </div>
-            <p><em>Landmark:</em> <strong>Middle C</strong> sits on a small "ledger line" between the two staves.</p>
-            
-            <div class="tip">
-                <strong>💡 Tip:</strong> Every Good Boy Does Fine (Treble Clef lines: E, G, B, D, F). The spaces spell FACE.
-            </div>
-        </div>
-
-        <div class="card">
-            <h3>Intermediate: Intervals</h3>
-            <p>Instead of reading every note, pianists look for <strong>Intervals</strong> (distances). A 2nd is the next white key, a 3rd skips one.</p>
-            <ul>
-                <li><strong>2nd:</strong> Adjacent notes (C to D)</li>
-                <li><strong>3rd:</strong> Skip one note (C to E)</li>
-                <li><strong>4th:</strong> Skip two notes (C to F)</li>
-                <li><strong>5th:</strong> Skip three notes (C to G)</li>
-            </ul>
-            <div class="tip">
-                <strong>💡 Tip:</strong> Use your fingers to count on the staff. Put one finger on each line and space to keep track of intervals.
-            </div>
-        </div>
-
-        <div class="card">
-            <h3>Advanced: Reading Faster</h3>
-            <p>Professional musicians use these techniques to sight-read quickly:</p>
-            <ul>
-                <li><strong>Chunking:</strong> Group notes into patterns rather than reading individually</li>
-                <li><strong>Hand Position:</strong> Your hand naturally covers an octave—use this reference point</li>
-                <li><strong>Look Ahead:</strong> Always scan 1-2 measures ahead while playing</li>
-                <li><strong>Anchor Notes:</strong> Memorize a few landmarks (like Middle C) to navigate faster</li>
-            </ul>
-            <div class="tip">
-                <strong>💡 Tip:</strong> Practice reading without playing. Your eyes should always be slightly ahead of your fingers.
-            </div>
-        </div>
-
-        <div class="card">
-            <h3>Bass Clef Basics</h3>
-            <p>The Bass Clef (left hand) uses a different notation system:</p>
-            <ul>
-                <li><strong>Lines (bottom to top):</strong> G, B, D, F, A</li>
-                <li><strong>Spaces (bottom to top):</strong> A, C, E, G</li>
-                <li><strong>Memory aid:</strong> "Good Boys Do Fine Always" for lines, "All Cows Eat Grass" for spaces</li>
-            </ul>
-            <div class="tip">
-                <strong>💡 Tip:</strong> Bass clef is just treble clef moved down. Middle C appears on the ledger line above the bass staff.
-            </div>
-        </div>
-
-        <div class="card">
-            <h3>Practice Tips</h3>
-            <ul>
-                <li>Start slow—accuracy before speed</li>
-                <li>Practice one clef at a time before mixing them</li>
-                <li>Use the Practice tab daily for 5-10 minutes</li>
-                <li>Write out note names on sheet music to reinforce memory</li>
-                <li>Challenge yourself: take a real piece and name every note before playing</li>
-            </ul>
+            <p><small>Tip: Spaces in Treble Clef spell <strong>F-A-C-E</strong>.</small></p>
         </div>
     </div>
 
     <div id="practice-tab" class="hidden">
         <div class="clef-toggle">
-            <button id="toggle-treble" onclick="setClef('treble')">Treble Clef</button>
-            <button id="toggle-bass" class="btn-inactive" onclick="setClef('bass')">Bass Clef</button>
+            <button id="toggle-treble" onclick="setClef('treble')">Treble</button>
+            <button id="toggle-bass" class="btn-inactive" onclick="setClef('bass')">Bass</button>
         </div>
-        <div class="card" style="text-align: center;">
+        
+        <div class="card">
+            <div class="stats">
+                <span>Score: <span id="score">0</span></span>
+                <span>Level: <span id="level">1</span></span>
+            </div>
             <div id="canvas-container"></div>
-            <p id="feedback">Identify the note</p>
-            <div class="grid" id="note-buttons"></div>
+            <div class="grid" id="note-buttons">
+                <!-- Buttons generated by JS -->
+            </div>
         </div>
     </div>
 </div>
@@ -124,23 +80,23 @@
 <script>
     let currentClef = 'treble';
     let currentNote = '';
+    let score = 0;
+    let level = 1;
     let Renderer, Stave, StaveNote, Voice, Formatter;
-    
-    const trebleRange = [
-        {key: 'C/4', name: 'C'}, {key: 'D/4', name: 'D'}, {key: 'E/4', name: 'E'}, 
-        {key: 'F/4', name: 'F'}, {key: 'G/4', name: 'G'}, {key: 'A/4', name: 'A'}, {key: 'B/4', name: 'B'}, {key: 'C/5', name: 'C'}
-    ];
-    const bassRange = [
-        {key: 'C/3', name: 'C'}, {key: 'D/3', name: 'D'}, {key: 'E/3', name: 'E'}, 
-        {key: 'F/3', name: 'F'}, {key: 'G/3', name: 'G'}, {key: 'A/3', name: 'A'}, {key: 'B/3', name: 'B'}, {key: 'C/4', name: 'C'}
-    ];
+
+    // Expanded range including basic accidentals for higher levels
+    const notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+    const octaves = { treble: ['4', '5'], bass: ['2', '3'] };
 
     function showTab(tab) {
         document.getElementById('learn-tab').classList.toggle('hidden', tab !== 'learn');
         document.getElementById('practice-tab').classList.toggle('hidden', tab !== 'practice');
         document.getElementById('btn-learn').classList.toggle('btn-inactive', tab !== 'learn');
         document.getElementById('btn-practice').classList.toggle('btn-inactive', tab !== 'practice');
-        if(tab === 'practice') drawNote();
+        if(tab === 'practice') {
+            window.dispatchEvent(new Event('resize')); // Force redraw for mobile sizing
+            drawNote();
+        }
     }
 
     function setClef(clef) {
@@ -150,58 +106,110 @@
         drawNote();
     }
 
+    // Audio Feedback (Web Audio API)
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playNote(freq) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.5);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.5);
+    }
+
     function drawNote() {
         const container = document.getElementById('canvas-container');
         container.innerHTML = '';
+        
+        const width = container.offsetWidth;
         const renderer = new Renderer(container, Renderer.Backends.SVG);
-        renderer.resize(200, 140);
+        renderer.resize(width, 150);
         const context = renderer.getContext();
-        const stave = new Stave(10, 10, 180);
+        context.scale(1.2, 1.2); // Make it larger for mobile
+
+        const stave = new Stave(10, 10, (width / 1.2) - 20);
         stave.addClef(currentClef).setContext(context).draw();
 
-        const range = currentClef === 'treble' ? trebleRange : bassRange;
-        const noteObj = range[Math.floor(Math.random() * range.length)];
-        currentNote = noteObj.name;
+        // Progressive Difficulty: Increase range based on level
+        const noteName = notes[Math.floor(Math.random() * (level > 2 ? 7 : 4))];
+        const octave = octaves[currentClef][Math.floor(Math.random() * (level > 1 ? 2 : 1))];
         
-        const visualNote = new StaveNote({ clef: currentClef, keys: [noteObj.key], duration: "q" });
+        // Add accidental if level is high
+        let accidental = "";
+        if (level > 3 && Math.random() > 0.7) accidental = Math.random() > 0.5 ? "#" : "b";
+
+        currentNote = noteName + accidental;
+        
+        const visualNote = new StaveNote({ 
+            clef: currentClef, 
+            keys: [`${noteName}${accidental}/${octave}`], 
+            duration: "q" 
+        });
+
+        if(accidental) {
+            visualNote.addModifier(new Vex.Flow.Accidental(accidental));
+        }
+
         const voice = new Voice({ num_beats: 1, beat_value: 4 });
         voice.addTickables([visualNote]);
-        
-        new Formatter().joinVoices([voice]).format([voice], 100);
+        new Formatter().joinVoices([voice]).format([voice], 50);
         voice.draw(context, stave);
     }
 
-    function checkAnswer(guess) {
-        const feedback = document.getElementById('feedback');
+    function checkAnswer(guess, btn) {
         if(guess === currentNote) {
-            feedback.innerHTML = "<span style='color:green'>Correct! 🎹</span>";
-            setTimeout(() => { feedback.innerText = "Identify the note"; drawNote(); }, 700);
+            score++;
+            if(score % 5 === 0) level++;
+            document.getElementById('score').innerText = score;
+            document.getElementById('level').innerText = level;
+            
+            btn.classList.add('correct-flash');
+            playNote(440 + (score * 10)); // Pitch goes up with score
+            
+            setTimeout(() => {
+                btn.classList.remove('correct-flash');
+                drawNote();
+            }, 200);
         } else {
-            feedback.innerHTML = "<span style='color:red'>Try again</span>";
+            const container = document.getElementById('canvas-container');
+            container.classList.add('error-shake');
+            setTimeout(() => container.classList.remove('error-shake'), 400);
         }
     }
 
-    // Initialize on page load
     document.addEventListener('DOMContentLoaded', () => {
-        if(typeof Vex !== 'undefined' && Vex.Flow) {
-            console.log('VexFlow loaded successfully');
-            // Extract VexFlow classes after library loads
+        if(typeof Vex !== 'undefined') {
             Renderer = Vex.Flow.Renderer;
             Stave = Vex.Flow.Stave;
             StaveNote = Vex.Flow.StaveNote;
             Voice = Vex.Flow.Voice;
             Formatter = Vex.Flow.Formatter;
             
-            // Build buttons
             const btnContainer = document.getElementById('note-buttons');
-            ['C', 'D', 'E', 'F', 'G', 'A', 'B'].forEach(note => {
+            // Include Sharps and Flats in buttons for later levels
+            const allPossible = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
+            
+            allPossible.forEach(note => {
                 const btn = document.createElement('button');
+                btn.className = 'note-btn';
                 btn.innerText = note;
-                btn.onclick = () => checkAnswer(note);
+                btn.onclick = () => {
+                    if (audioCtx.state === 'suspended') audioCtx.resume();
+                    checkAnswer(note, btn);
+                };
                 btnContainer.appendChild(btn);
             });
-        } else {
-            console.error('VexFlow failed to load');
+        }
+    });
+    
+    // Handle mobile orientation/resize
+    window.addEventListener('resize', () => {
+        if(!document.getElementById('practice-tab').classList.contains('hidden')) {
+            drawNote();
         }
     });
 </script>
