@@ -3,93 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Piano Theory Master</title>
+    <title>Piano Theory Pro</title>
     <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.2/build/vexflow.min.js"></script>
     <style>
-        :root { --primary: #2563eb; --accent: #7c3aed; --bg: #f1f5f9; --card: #ffffff; --text: #0f172a; }
+        :root { --primary: #2563eb; --secondary: #64748b; --bg: #f8fafc; --white: #ffffff; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; line-height: 1.5; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 10px; color: #1e293b; }
         
         .container { max-width: 500px; margin: 0 auto; }
-        .nav { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        button { padding: 14px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 16px; }
-        .btn-main { background: var(--primary); color: white; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2); }
-        .btn-sec { background: #cbd5e1; color: #475569; }
+        .nav { display: flex; gap: 10px; margin-bottom: 15px; }
+        .nav button { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .active { background: var(--primary); color: white; }
+        .inactive { background: #e2e8f0; color: #64748b; }
 
-        .card { background: var(--card); border-radius: 16px; padding: 20px; margin-bottom: 15px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-        h2, h3 { margin-top: 0; color: var(--primary); }
+        .card { background: var(--white); border-radius: 12px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 15px; }
         
-        /* Practice Interface */
-        #canvas-container { background: white; width: 100%; height: 180px; display: flex; justify-content: center; align-items: center; border: 2px solid #e2e8f0; border-radius: 12px; margin: 15px 0; }
-        .note-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        .answer-btn { background: #334155; color: white; padding: 15px 5px; }
-        .score-board { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 10px; }
+        /* Learning Visuals */
+        .staff-demo { background: #fff; border: 1px solid #ddd; border-radius: 8px; margin: 10px 0; padding: 10px; text-align: center; font-weight: bold; color: var(--primary); }
+        .mnemonic-box { background: #eff6ff; border-left: 4px solid var(--primary); padding: 10px; margin: 10px 0; font-size: 0.95rem; }
 
-        /* Learn Content */
-        .mnemonic { background: #f8fafc; border-left: 4px solid var(--accent); padding: 10px; margin: 10px 0; font-style: italic; }
-        .clef-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-bottom: 5px; }
-        .treble-label { background: #dbeafe; color: #1e40af; }
-        .bass-label { background: #fef2f2; color: #991b1b; }
+        /* Practice Area */
+        #canvas-wrap { width: 100%; min-height: 160px; display: flex; justify-content: center; align-items: center; background: white; border-radius: 8px; border: 2px solid #e2e8f0; }
+        .stats { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; }
+        .btn-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 15px; }
+        .note-btn { background: #334155; color: white; border: none; padding: 18px 5px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; }
+        .note-btn:active { background: var(--primary); }
 
         .hidden { display: none; }
-        .correct { background: #22c55e !important; }
-        .wrong { background: #ef4444 !important; animation: shake 0.3s; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        @keyframes flash-green { 0% { border-color: #22c55e; } 100% { border-color: #e2e8f0; } }
+        @keyframes flash-red { 0% { border-color: #ef4444; } 100% { border-color: #e2e8f0; } }
+        .correct { animation: flash-green 0.6s ease; }
+        .wrong { animation: flash-red 0.6s ease; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="nav">
-        <button id="nav-learn" class="btn-main" onclick="switchTab('learn')">Learn</button>
-        <button id="nav-practice" class="btn-sec" onclick="switchTab('practice')">Practice</button>
+        <button id="tab-learn" class="active" onclick="setTab('learn')">Learn</button>
+        <button id="tab-practice" class="inactive" onclick="setTab('practice')">Practice</button>
     </div>
 
-    <!-- LEARN SECTION -->
-    <div id="section-learn">
+    <!-- LEARN TAB -->
+    <div id="view-learn">
         <div class="card">
-            <h2>The Grand Staff</h2>
-            <p>Pianists read the <strong>Grand Staff</strong>. The top staff is the Treble Clef (usually right hand), and the bottom is the Bass Clef (usually left hand).</p>
-            
-            <div class="clef-badge treble-label">Treble Clef (G-Clef)</div>
-            <p>The symbol curls around the 2nd line, which is <strong>G</strong>.</p>
-            <div class="mnemonic">Lines: <strong>E</strong>very <strong>G</strong>ood <strong>B</strong>oy <strong>D</strong>oes <strong>F</strong>ine</div>
-            <div class="mnemonic">Spaces: <strong>F - A - C - E</strong></div>
-
-            <div class="clef-badge bass-label">Bass Clef (F-Clef)</div>
-            <p>The two dots surround the 4th line, which is <strong>F</strong>.</p>
-            <div class="mnemonic">Lines: <strong>G</strong>ood <strong>B</strong>oys <strong>D</strong>o <strong>F</strong>ine <strong>A</strong>lways</div>
-            <div class="mnemonic">Spaces: <strong>A</strong>ll <strong>C</strong>ows <strong>E</strong>at <strong>G</strong>rass</div>
+            <h2>The Treble Clef</h2>
+            <p>Used for the <strong>Right Hand</strong>. It spirals around the 2nd line from the bottom: the <strong>G</strong> line.</p>
+            <div class="staff-demo">Lines: E - G - B - D - F</div>
+            <div class="mnemonic-box">💡 <strong>Tip:</strong> Spaces spell <strong>F - A - C - E</strong>. It's the easiest way to find your place!</div>
         </div>
 
         <div class="card">
-            <h3>Middle C: The Anchor</h3>
-            <p>Middle C doesn't live on either staff—it lives on its own tiny line (a <strong>ledger line</strong>) right in the middle of the two. Use it as your home base.</p>
+            <h2>The Bass Clef</h2>
+            <p>Used for the <strong>Left Hand</strong>. The two dots surround the 4th line from the bottom: the <strong>F</strong> line.</p>
+            <div class="staff-demo">Lines: G - B - D - F - A</div>
+            <div class="mnemonic-box">💡 <strong>Tip:</strong> <strong>A</strong>ll <strong>C</strong>ows <strong>E</strong>at <strong>G</strong>rass (Spaces).</div>
+        </div>
+        
+        <div class="card">
+            <h3>Visualizing the Scale</h3>
+            <p>Musical notes move in a repeating cycle: <strong>A-B-C-D-E-F-G</strong>. After G, it goes back to A.</p>
+            <ul>
+                <li><strong>Step:</strong> Line to Space (C to D)</li>
+                <li><strong>Skip:</strong> Line to Line (C to E)</li>
+            </ul>
         </div>
     </div>
 
-    <!-- PRACTICE SECTION -->
-    <div id="section-practice" class="hidden">
+    <!-- PRACTICE TAB -->
+    <div id="view-practice" class="hidden">
         <div class="card">
-            <div class="score-board">
+            <div class="stats">
                 <span>Score: <span id="score">0</span></span>
-                <select id="clef-select" onchange="resetGame()">
-                    <option value="treble">Treble Clef</option>
-                    <option value="bass">Bass Clef</option>
+                <select id="clef-type" onchange="initPractice()">
+                    <option value="treble">Treble Clef (RH)</option>
+                    <option value="bass">Bass Clef (LH)</option>
                 </select>
             </div>
             
-            <div id="canvas-container"></div>
-            
-            <div class="note-grid">
-                <button class="answer-btn" onclick="checkAnswer('C')">C</button>
-                <button class="answer-btn" onclick="checkAnswer('D')">D</button>
-                <button class="answer-btn" onclick="checkAnswer('E')">E</button>
-                <button class="answer-btn" onclick="checkAnswer('F')">F</button>
-                <button class="answer-btn" onclick="checkAnswer('G')">G</button>
-                <button class="answer-btn" onclick="checkAnswer('A')">A</button>
-                <button class="answer-btn" onclick="checkAnswer('B')">B</button>
-                <button class="answer-btn" style="background:#64748b" onclick="newQuestion()">Skip</button>
+            <div id="canvas-wrap"></div>
+
+            <div class="btn-grid">
+                <button class="note-btn" onclick="guess('C')">C</button>
+                <button class="note-btn" onclick="guess('D')">D</button>
+                <button class="note-btn" onclick="guess('E')">E</button>
+                <button class="note-btn" onclick="guess('F')">F</button>
+                <button class="note-btn" onclick="guess('G')">G</button>
+                <button class="note-btn" onclick="guess('A')">A</button>
+                <button class="note-btn" onclick="guess('B')">B</button>
+                <button class="note-btn" style="background:#64748b" onclick="initPractice()">?</button>
             </div>
         </div>
     </div>
@@ -97,71 +99,76 @@
 
 <script>
     let score = 0;
-    let currentNote = "";
+    let answer = "";
     const { Renderer, Stave, StaveNote, Voice, Formatter } = Vex.Flow;
 
-    function switchTab(tab) {
-        document.getElementById('section-learn').classList.toggle('hidden', tab !== 'learn');
-        document.getElementById('section-practice').classList.toggle('hidden', tab !== 'practice');
-        document.getElementById('nav-learn').className = tab === 'learn' ? 'btn-main' : 'btn-sec';
-        document.getElementById('nav-practice').className = tab === 'practice' ? 'btn-main' : 'btn-sec';
-        if(tab === 'practice') newQuestion();
+    function setTab(name) {
+        document.getElementById('view-learn').classList.toggle('hidden', name !== 'learn');
+        document.getElementById('view-practice').classList.toggle('hidden', name !== 'practice');
+        document.getElementById('tab-learn').className = (name === 'learn' ? 'active' : 'inactive');
+        document.getElementById('tab-practice').className = (name === 'practice' ? 'active' : 'inactive');
+        if(name === 'practice') {
+            // Delay to ensure container width is calculated on mobile
+            setTimeout(initPractice, 50);
+        }
     }
 
-    function newQuestion() {
-        const container = document.getElementById('canvas-container');
-        container.innerHTML = "";
-        const clef = document.getElementById('clef-select').value;
+    function initPractice() {
+        const wrap = document.getElementById('canvas-wrap');
+        wrap.innerHTML = "";
+        const clef = document.getElementById('clef-type').value;
         
-        const renderer = new Renderer(container, Renderer.Backends.SVG);
-        renderer.resize(300, 150);
+        const width = wrap.clientWidth;
+        const renderer = new Renderer(wrap, Renderer.Backends.SVG);
+        renderer.resize(width, 160);
         const context = renderer.getContext();
         
-        const stave = new Stave(10, 20, 280);
+        // Draw the scale lines (Stave)
+        const stave = new Stave(10, 30, width - 20);
         stave.addClef(clef).setContext(context).draw();
 
-        // Randomize note
+        // Logic for Note Selection
         const notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
-        const octaves = clef === 'treble' ? [4, 5] : [2, 3];
-        const randomName = notes[Math.floor(Math.random() * notes.length)];
-        const randomOctave = octaves[Math.floor(Math.random() * octaves.length)];
-        currentNote = randomName;
+        const octaves = (clef === 'treble') ? [4, 5] : [2, 3];
+        
+        answer = notes[Math.floor(Math.random() * notes.length)];
+        const oct = octaves[Math.floor(Math.random() * octaves.length)];
 
         const staveNote = new StaveNote({
             clef: clef,
-            keys: [`${randomName}/${randomOctave}`],
+            keys: [`${answer}/${oct}`],
             duration: "q"
         });
 
         const voice = new Voice({ num_beats: 1, beat_value: 4 });
         voice.addTickables([staveNote]);
-        new Formatter().joinVoices([voice]).format([voice], 150);
+        new Formatter().joinVoices([voice]).format([voice], width / 2);
         voice.draw(context, stave);
     }
 
-    function checkAnswer(guess) {
-        const btns = document.querySelectorAll('.answer-btn');
-        if (guess === currentNote) {
+    function guess(val) {
+        const wrap = document.getElementById('canvas-wrap');
+        wrap.classList.remove('correct', 'wrong');
+        
+        // Trigger reflow for animation
+        void wrap.offsetWidth;
+
+        if(val === answer) {
             score++;
             document.getElementById('score').innerText = score;
-            document.getElementById('canvas-container').style.borderColor = "#22c55e";
-            setTimeout(() => {
-                document.getElementById('canvas-container').style.borderColor = "#e2e8f0";
-                newQuestion();
-            }, 500);
+            wrap.classList.add('correct');
+            setTimeout(initPractice, 400);
         } else {
-            document.getElementById('canvas-container').classList.add('wrong');
-            setTimeout(() => {
-                document.getElementById('canvas-container').classList.remove('wrong');
-            }, 300);
+            wrap.classList.add('wrong');
         }
     }
 
-    function resetGame() {
-        score = 0;
-        document.getElementById('score').innerText = score;
-        newQuestion();
-    }
+    // Handle orientation changes on mobile
+    window.addEventListener('resize', () => {
+        if(!document.getElementById('view-practice').classList.contains('hidden')) {
+            initPractice();
+        }
+    });
 </script>
 </body>
 </html>
