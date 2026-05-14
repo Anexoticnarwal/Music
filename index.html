@@ -1,174 +1,265 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Piano Theory Pro</title>
-    <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.2/build/vexflow.min.js"></script>
-    <style>
-        :root { --primary: #2563eb; --secondary: #64748b; --bg: #f8fafc; --white: #ffffff; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 10px; color: #1e293b; }
-        
-        .container { max-width: 500px; margin: 0 auto; }
-        .nav { display: flex; gap: 10px; margin-bottom: 15px; }
-        .nav button { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .active { background: var(--primary); color: white; }
-        .inactive { background: #e2e8f0; color: #64748b; }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+  <title>Piano Theory Pro — Fixed</title>
 
-        .card { background: var(--white); border-radius: 12px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 15px; }
-        
-        /* Learning Visuals */
-        .staff-demo { background: #fff; border: 1px solid #ddd; border-radius: 8px; margin: 10px 0; padding: 10px; text-align: center; font-weight: bold; color: var(--primary); }
-        .mnemonic-box { background: #eff6ff; border-left: 4px solid var(--primary); padding: 10px; margin: 10px 0; font-size: 0.95rem; }
+  <!-- VexFlow -->
+  <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.2/build/vexflow.min.js"></script>
 
-        /* Practice Area */
-        #canvas-wrap { width: 100%; min-height: 160px; display: flex; justify-content: center; align-items: center; background: white; border-radius: 8px; border: 2px solid #e2e8f0; }
-        .stats { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; }
-        .btn-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 15px; }
-        .note-btn { background: #334155; color: white; border: none; padding: 18px 5px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; }
-        .note-btn:active { background: var(--primary); }
+  <style>
+    :root { --primary: #2563eb; --secondary: #64748b; --bg: #f8fafc; --white: #ffffff; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial; background: var(--bg); margin: 0; padding: 12px; color: #0f172a; }
+    .container { max-width: 560px; margin: 0 auto; }
+    .nav { display:flex; gap:10px; margin-bottom:14px; }
+    .nav button { flex:1; padding:12px; border:none; border-radius:8px; font-weight:700; cursor:pointer; }
+    .active { background:var(--primary); color:#fff; }
+    .inactive { background:#e6eefc; color:var(--secondary); }
 
-        .hidden { display: none; }
-        @keyframes flash-green { 0% { border-color: #22c55e; } 100% { border-color: #e2e8f0; } }
-        @keyframes flash-red { 0% { border-color: #ef4444; } 100% { border-color: #e2e8f0; } }
-        .correct { animation: flash-green 0.6s ease; }
-        .wrong { animation: flash-red 0.6s ease; }
-    </style>
+    .card { background:var(--white); border-radius:12px; padding:16px; box-shadow:0 1px 3px rgba(2,6,23,0.06); margin-bottom:14px; }
+
+    .staff-demo { background:#fff; border:1px solid #e6e9ef; border-radius:8px; margin:10px 0; padding:10px; text-align:center; color:var(--primary); font-weight:700; }
+    .mnemonic-box { background:#eff6ff; border-left:4px solid var(--primary); padding:10px; margin:10px 0; font-size:0.95rem; }
+
+    /* Practice */
+    #canvas-wrap { width:100%; min-height:160px; display:flex; justify-content:center; align-items:center; background:#fff; border-radius:8px; border:2px solid #e6eefc; overflow:hidden; }
+    .stats { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-weight:700; gap:8px; }
+    .btn-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:12px; }
+    .note-btn { background:#334155; color:#fff; border:none; padding:14px 6px; border-radius:8px; font-size:1.05rem; font-weight:700; }
+    .note-btn:active { transform:translateY(1px); }
+    .hidden { display:none; }
+    @keyframes flash-green { 0% { border-color:#22c55e; } 100% { border-color:#e6eefc; } }
+    @keyframes flash-red { 0% { border-color:#ef4444; } 100% { border-color:#e6eefc; } }
+    .correct { animation:flash-green 0.6s ease; }
+    .wrong { animation:flash-red 0.6s ease; }
+
+    /* Small responsive tweaks */
+    @media (max-width:420px) {
+      .note-btn { padding:12px 6px; font-size:1rem; }
+    }
+  </style>
 </head>
 <body>
-
-<div class="container">
+  <div class="container">
     <div class="nav">
-        <button id="tab-learn" class="active" onclick="setTab('learn')">Learn</button>
-        <button id="tab-practice" class="inactive" onclick="setTab('practice')">Practice</button>
+      <button id="tab-learn" class="active" onclick="setTab('learn')">Learn</button>
+      <button id="tab-practice" class="inactive" onclick="setTab('practice')">Practice</button>
     </div>
 
-    <!-- LEARN TAB -->
+    <!-- LEARN -->
     <div id="view-learn">
-        <div class="card">
-            <h2>The Treble Clef</h2>
-            <p>Used for the <strong>Right Hand</strong>. It spirals around the 2nd line from the bottom: the <strong>G</strong> line.</p>
-            <div class="staff-demo">Lines: E - G - B - D - F</div>
-            <div class="mnemonic-box">💡 <strong>Tip:</strong> Spaces spell <strong>F - A - C - E</strong>. It's the easiest way to find your place!</div>
-        </div>
+      <div class="card">
+        <h2>The Treble Clef</h2>
+        <p>Used for the <strong>Right Hand</strong>. It spirals around the 2nd line from the bottom: the <strong>G</strong> line.</p>
+        <div id="treble-demo" class="staff-demo" aria-hidden="false"></div>
+        <div class="mnemonic-box">💡 <strong>Tip:</strong> Spaces spell <strong>F - A - C - E</strong>. It's the easiest way to find your place!</div>
+      </div>
 
-        <div class="card">
-            <h2>The Bass Clef</h2>
-            <p>Used for the <strong>Left Hand</strong>. The two dots surround the 4th line from the bottom: the <strong>F</strong> line.</p>
-            <div class="staff-demo">Lines: G - B - D - F - A</div>
-            <div class="mnemonic-box">💡 <strong>Tip:</strong> <strong>A</strong>ll <strong>C</strong>ows <strong>E</strong>at <strong>G</strong>rass (Spaces).</div>
-        </div>
-        
-        <div class="card">
-            <h3>Visualizing the Scale</h3>
-            <p>Musical notes move in a repeating cycle: <strong>A-B-C-D-E-F-G</strong>. After G, it goes back to A.</p>
-            <ul>
-                <li><strong>Step:</strong> Line to Space (C to D)</li>
-                <li><strong>Skip:</strong> Line to Line (C to E)</li>
-            </ul>
-        </div>
+      <div class="card">
+        <h2>The Bass Clef</h2>
+        <p>Used for the <strong>Left Hand</strong>. The two dots surround the 4th line from the bottom: the <strong>F</strong> line.</p>
+        <div id="bass-demo" class="staff-demo" aria-hidden="false"></div>
+        <div class="mnemonic-box">💡 <strong>Tip:</strong> <strong>A</strong>ll <strong>C</strong>ows <strong>E</strong>at <strong>G</strong>rass (Spaces).</div>
+      </div>
+
+      <div class="card">
+        <h3>Visualizing the Scale</h3>
+        <p>Musical notes move in a repeating cycle: <strong>A - B - C - D - E - F - G</strong>. After G, it goes back to A.</p>
+        <ul>
+          <li><strong>Step:</strong> Line to Space (C to D)</li>
+          <li><strong>Skip:</strong> Line to Line (C to E)</li>
+        </ul>
+        <div id="scale-demo" class="staff-demo" style="font-weight:600; color:#0f172a;"></div>
+      </div>
     </div>
 
-    <!-- PRACTICE TAB -->
+    <!-- PRACTICE -->
     <div id="view-practice" class="hidden">
-        <div class="card">
-            <div class="stats">
-                <span>Score: <span id="score">0</span></span>
-                <select id="clef-type" onchange="initPractice()">
-                    <option value="treble">Treble Clef (RH)</option>
-                    <option value="bass">Bass Clef (LH)</option>
-                </select>
-            </div>
-            
-            <div id="canvas-wrap"></div>
-
-            <div class="btn-grid">
-                <button class="note-btn" onclick="guess('C')">C</button>
-                <button class="note-btn" onclick="guess('D')">D</button>
-                <button class="note-btn" onclick="guess('E')">E</button>
-                <button class="note-btn" onclick="guess('F')">F</button>
-                <button class="note-btn" onclick="guess('G')">G</button>
-                <button class="note-btn" onclick="guess('A')">A</button>
-                <button class="note-btn" onclick="guess('B')">B</button>
-                <button class="note-btn" style="background:#64748b" onclick="initPractice()">?</button>
-            </div>
+      <div class="card">
+        <div class="stats">
+          <span>Score: <span id="score">0</span></span>
+          <select id="clef-type" onchange="initPractice()" aria-label="Choose clef">
+            <option value="treble">Treble Clef (RH)</option>
+            <option value="bass">Bass Clef (LH)</option>
+          </select>
         </div>
-    </div>
-</div>
 
-<script>
+        <div id="canvas-wrap" role="img" aria-label="Practice staff area"></div>
+
+        <div class="btn-grid" style="margin-top:14px;">
+          <button class="note-btn" onclick="guess('C')">C</button>
+          <button class="note-btn" onclick="guess('D')">D</button>
+          <button class="note-btn" onclick="guess('E')">E</button>
+          <button class="note-btn" onclick="guess('F')">F</button>
+          <button class="note-btn" onclick="guess('G')">G</button>
+          <button class="note-btn" onclick="guess('A')">A</button>
+          <button class="note-btn" onclick="guess('B')">B</button>
+          <button class="note-btn" style="background:#64748b" onclick="initPractice()">↻</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Use VexFlow from the global Vex object
+    const VF = Vex.Flow;
     let score = 0;
     let answer = "";
-    const { Renderer, Stave, StaveNote, Voice, Formatter } = Vex.Flow;
+    let currentOctave = 4;
+
+    // Utility: lowercase note names for VexFlow keys
+    function vfKey(note, octave) {
+      return `${note.toLowerCase()}/${octave}`;
+    }
 
     function setTab(name) {
-        document.getElementById('view-learn').classList.toggle('hidden', name !== 'learn');
-        document.getElementById('view-practice').classList.toggle('hidden', name !== 'practice');
-        document.getElementById('tab-learn').className = (name === 'learn' ? 'active' : 'inactive');
-        document.getElementById('tab-practice').className = (name === 'practice' ? 'active' : 'inactive');
-        if(name === 'practice') {
-            // Delay to ensure container width is calculated on mobile
-            setTimeout(initPractice, 50);
-        }
+      document.getElementById('view-learn').classList.toggle('hidden', name !== 'learn');
+      document.getElementById('view-practice').classList.toggle('hidden', name !== 'practice');
+      document.getElementById('tab-learn').className = (name === 'learn' ? 'active' : 'inactive');
+      document.getElementById('tab-practice').className = (name === 'practice' ? 'active' : 'inactive');
+
+      if (name === 'practice') {
+        // small delay to ensure layout settled on mobile
+        setTimeout(initPractice, 60);
+      }
     }
 
+    // Initialize practice: draw a single random note on the selected clef
     function initPractice() {
-        const wrap = document.getElementById('canvas-wrap');
-        wrap.innerHTML = "";
-        const clef = document.getElementById('clef-type').value;
-        
-        const width = wrap.clientWidth;
-        const renderer = new Renderer(wrap, Renderer.Backends.SVG);
-        renderer.resize(width, 160);
-        const context = renderer.getContext();
-        
-        // Draw the scale lines (Stave)
-        const stave = new Stave(10, 30, width - 20);
-        stave.addClef(clef).setContext(context).draw();
+      const wrap = document.getElementById('canvas-wrap');
+      wrap.classList.remove('correct', 'wrong');
+      wrap.innerHTML = "";
 
-        // Logic for Note Selection
-        const notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
-        const octaves = (clef === 'treble') ? [4, 5] : [2, 3];
-        
-        answer = notes[Math.floor(Math.random() * notes.length)];
-        const oct = octaves[Math.floor(Math.random() * octaves.length)];
+      const clef = document.getElementById('clef-type').value;
+      const width = Math.max(220, wrap.clientWidth || 320);
+      const height = 160;
 
-        const staveNote = new StaveNote({
-            clef: clef,
-            keys: [`${answer}/${oct}`],
-            duration: "q"
-        });
+      // Create renderer and context
+      const renderer = new VF.Renderer(wrap, VF.Renderer.Backends.SVG);
+      renderer.resize(width, height);
+      const context = renderer.getContext();
+      context.setFont("Arial", 10, "").setBackgroundFillStyle("#fff");
 
-        const voice = new Voice({ num_beats: 1, beat_value: 4 });
-        voice.addTickables([staveNote]);
-        new Formatter().joinVoices([voice]).format([voice], width / 2);
-        voice.draw(context, stave);
+      // Draw stave
+      const stave = new VF.Stave(8, 28, width - 16);
+      stave.addClef(clef).setContext(context).draw();
+
+      // Notes and octaves appropriate for clef
+      const notes = ['C','D','E','F','G','A','B'];
+      const octaves = (clef === 'treble') ? [4,5] : [2,3];
+
+      // Pick random answer
+      answer = notes[Math.floor(Math.random() * notes.length)];
+      currentOctave = octaves[Math.floor(Math.random() * octaves.length)];
+
+      // Create a StaveNote with a valid key (lowercase)
+      const staveNote = new VF.StaveNote({
+        clef: clef,
+        keys: [vfKey(answer, currentOctave)],
+        duration: "q"
+      });
+
+      // Add accidental or ledger lines automatically handled by VexFlow
+      const voice = new VF.Voice({ num_beats: 1, beat_value: 4 });
+      voice.addTickables([staveNote]);
+
+      // Format and draw
+      new VF.Formatter().joinVoices([voice]).format([voice], width - 80);
+      voice.draw(context, stave);
     }
 
+    // Guess handler
     function guess(val) {
-        const wrap = document.getElementById('canvas-wrap');
-        wrap.classList.remove('correct', 'wrong');
-        
-        // Trigger reflow for animation
-        void wrap.offsetWidth;
+      const wrap = document.getElementById('canvas-wrap');
+      wrap.classList.remove('correct', 'wrong');
+      void wrap.offsetWidth; // force reflow for animation
 
-        if(val === answer) {
-            score++;
-            document.getElementById('score').innerText = score;
-            wrap.classList.add('correct');
-            setTimeout(initPractice, 400);
-        } else {
-            wrap.classList.add('wrong');
-        }
+      if (!answer) {
+        // If for some reason answer not set, re-init
+        initPractice();
+        return;
+      }
+
+      if (val === answer) {
+        score++;
+        document.getElementById('score').innerText = score;
+        wrap.classList.add('correct');
+        setTimeout(initPractice, 420);
+      } else {
+        wrap.classList.add('wrong');
+      }
     }
 
-    // Handle orientation changes on mobile
+    // Render small learn visuals using VexFlow
+    function renderLearnVisuals() {
+      // Treble demo: show C4 - B4 ascending on treble
+      renderScaleStaff('treble', ['c/4','d/4','e/4','f/4','g/4','a/4','b/4'], 'treble-demo', 380, 80);
+
+      // Bass demo: show C3 - B3 ascending on bass
+      renderScaleStaff('bass', ['c/3','d/3','e/3','f/3','g/3','a/3','b/3'], 'bass-demo', 380, 80);
+
+      // Combined scale demo (single staff) to show the cycle A-B-C...
+      renderScaleStaff('treble', ['a/4','b/4','c/5','d/5','e/5','f/5','g/5','a/5'], 'scale-demo', 520, 80, true);
+    }
+
+    // Generic function to draw a small staff with given keys into a container
+    function renderScaleStaff(clef, keys, containerId, width = 380, height = 80, showNoteNames = false) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = ""; // clear
+      const renderer = new VF.Renderer(container, VF.Renderer.Backends.SVG);
+      renderer.resize(width, height);
+      const context = renderer.getContext();
+      context.setFont("Arial", 10, "").setBackgroundFillStyle("#fff");
+
+      const stave = new VF.Stave(6, 8, width - 12);
+      stave.addClef(clef).setContext(context).draw();
+
+      // Create notes
+      const vfNotes = keys.map(k => new VF.StaveNote({ clef: clef, keys: [k], duration: "q" }));
+
+      // Optionally add small text labels under notes
+      if (showNoteNames) {
+        vfNotes.forEach((note, i) => {
+          const noteName = keys[i].split('/')[0].toUpperCase();
+          // Add a simple text annotation under the note
+          const text = new VF.Annotation(noteName).setFont("Arial", 10).setVerticalJustification(VF.Annotation.VerticalJustify.BOTTOM);
+          note.addModifier(0, text);
+        });
+      }
+
+      const voice = new VF.Voice({ num_beats: vfNotes.length, beat_value: 4 });
+      voice.addTickables(vfNotes);
+      new VF.Formatter().joinVoices([voice]).format([voice], width - 80);
+      voice.draw(context, stave);
+    }
+
+    // Re-render learn visuals on resize to keep them crisp
+    let resizeTimer;
     window.addEventListener('resize', () => {
-        if(!document.getElementById('view-practice').classList.contains('hidden')) {
-            initPractice();
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        // Only re-render the learn visuals (they are small)
+        renderLearnVisuals();
+
+        // If practice is visible, re-init to fit new width
+        if (!document.getElementById('view-practice').classList.contains('hidden')) {
+          initPractice();
         }
+      }, 120);
     });
-</script>
+
+    // Initial render on load
+    window.addEventListener('load', () => {
+      renderLearnVisuals();
+      // If user lands on practice tab (unlikely), init it
+      if (!document.getElementById('view-practice').classList.contains('hidden')) {
+        initPractice();
+      }
+    });
+  </script>
 </body>
 </html>
+```
