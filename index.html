@@ -3,392 +3,273 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Piano Theory Pro — Lite (HTML)</title>
-
-  <!-- Tailwind (Play CDN) -->
+  <title>Piano Theory Pro</title>
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- VexFlow -->
-  <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.2/build/vexflow.min.js"></script>
-
   <style>
-    :root{
-      --accent:#334155; /* slate-700 */
-      --primary:#4f46e5; /* indigo-600 */
-      --bg:#f8fafc;
+    body { background: #f8fafc; }
+    .staff { 
+      position: relative; 
+      height: 200px; 
+      background: white; 
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
-    html,body,#app { height:100%; }
-    body{ background:var(--bg); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; color:#0f172a; }
-    /* safe area bottom for mobile (not all browsers support env()) */
-    .bottom-safe { padding-bottom: env(safe-area-inset-bottom, 12px); }
-
-    /* feedback animations */
-    .flash-correct { animation: flashGreen .64s ease; border-radius: 12px; }
-    .flash-wrong { animation: flashRed .64s ease; border-radius: 12px; }
-    @keyframes flashGreen { 0% { box-shadow: 0 0 0 4px rgba(34,197,94,0.08);} 100% { box-shadow: none; } }
-    @keyframes flashRed { 0% { box-shadow: 0 0 0 4px rgba(239,68,68,0.10);} 100% { box-shadow: none; } }
-
-    /* small improvements for VexFlow containers */
-    .staff-card { background:#fff; border:1px solid #eef2ff; border-radius:12px; padding:10px; min-height:140px; }
-    .stave-wrap { width:100%; min-height:120px; display: flex; align-items: center; justify-content: center; }
-    /* visually hide (but still accessible) note annotations in practice */
-    .sr-only-vis { position: absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    .staff-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #ccc;
+    }
+    .note {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: #4f46e5;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+      left: 80px;
+    }
+    .note-label {
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: #666;
+      font-weight: bold;
+    }
+    .btn-note {
+      padding: 12px 20px;
+      font-weight: bold;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 2px solid #e2e8f0;
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-note:hover {
+      border-color: #4f46e5;
+      color: #4f46e5;
+    }
+    .btn-note.active {
+      background: #4f46e5;
+      color: white;
+      border-color: #4f46e5;
+    }
+    .feedback {
+      min-height: 30px;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      margin: 20px 0;
+    }
+    .correct { color: #22c55e; }
+    .incorrect { color: #ef4444; }
   </style>
 </head>
 <body>
-  <div id="app" class="min-h-screen flex flex-col">
-    <header class="px-4 pt-6 pb-2">
-      <div class="max-w-xl mx-auto">
-        <h1 class="text-xl font-extrabold">Piano Theory Pro</h1>
-        <p class="text-sm text-slate-600">Learn staff positions, then practice identifying notes quickly.</p>
+  <div class="min-h-screen flex flex-col pb-24">
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 px-4 py-6">
+      <div class="max-w-2xl mx-auto">
+        <h1 class="text-2xl font-bold text-slate-900">Piano Theory</h1>
+        <p class="text-sm text-slate-600 mt-1">Learn to read musical notes</p>
       </div>
     </header>
 
-    <main class="flex-1 overflow-auto">
-      <div class="max-w-xl mx-auto px-4 pb-28">
-        <!-- LEARNING -->
-        <section id="view-learn" class="space-y-4">
-          <div class="bg-white rounded-2xl p-4 shadow-sm">
-            <div class="flex items-start justify-between">
-              <div>
-                <h2 class="font-bold text-lg text-slate-900">Treble Clef</h2>
-                <p class="text-sm text-slate-600 mt-1">Used for the right hand — lines & spaces labeled for study.</p>
-              </div>
+    <!-- Main Content -->
+    <main class="flex-1 overflow-auto px-4 py-6">
+      <div class="max-w-2xl mx-auto">
+        <!-- Learn Section -->
+        <section id="learn-view" class="space-y-6">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900 mb-4">Treble Clef</h2>
+            <div class="staff">
+              <div class="staff-line" style="top: 40px;"></div>
+              <div class="staff-line" style="top: 70px;"></div>
+              <div class="staff-line" style="top: 100px;"></div>
+              <div class="staff-line" style="top: 130px;"></div>
+              <div class="staff-line" style="top: 160px;"></div>
+              <div class="text-sm text-slate-400" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">𝄞</div>
+              <div id="learn-notes" style="position: relative; height: 100%;"></div>
             </div>
-
-            <div class="mt-3 staff-card">
-              <div id="treble-staff" class="stave-wrap" aria-hidden="false"></div>
-            </div>
-
-            <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div class="p-3 rounded-lg bg-slate-50">
-                <div class="text-xs text-slate-700 font-semibold">Treble Lines</div>
-                <div class="text-sm font-bold text-slate-900">E - G - B - D - F</div>
-                <div class="text-sm text-slate-500 mt-1">Every Good Boy Deserves Fudge</div>
+            <div class="grid grid-cols-2 gap-4 mt-4">
+              <div class="p-3 bg-indigo-50 rounded-lg">
+                <div class="text-xs font-semibold text-indigo-700">Lines</div>
+                <div class="text-lg font-bold text-indigo-900">E G B D F</div>
+                <div class="text-xs text-indigo-600">Every Good Boy Does Fine</div>
               </div>
-
-              <div class="p-3 rounded-lg bg-slate-50">
-                <div class="text-xs text-slate-700 font-semibold">Treble Spaces</div>
-                <div class="text-sm font-bold text-slate-900">F - A - C - E</div>
-                <div class="text-sm text-slate-500 mt-1">FACE</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="bg-white rounded-2xl p-4 shadow-sm">
-            <div class="flex items-start justify-between">
-              <div>
-                <h2 class="font-bold text-lg text-slate-900">Bass Clef</h2>
-                <p class="text-sm text-slate-600 mt-1">Used for the left hand — lines & spaces labeled for study.</p>
-              </div>
-            </div>
-
-            <div class="mt-3 staff-card">
-              <div id="bass-staff" class="stave-wrap" aria-hidden="false"></div>
-            </div>
-
-            <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div class="p-3 rounded-lg bg-slate-50">
-                <div class="text-xs text-slate-700 font-semibold">Bass Lines</div>
-                <div class="text-sm font-bold text-slate-900">G - B - D - F - A</div>
-                <div class="text-sm text-slate-500 mt-1">Good Boys Deserve Fudge Always</div>
-              </div>
-
-              <div class="p-3 rounded-lg bg-slate-50">
-                <div class="text-xs text-slate-700 font-semibold">Bass Spaces</div>
-                <div class="text-sm font-bold text-slate-900">A - C - E - G</div>
-                <div class="text-sm text-slate-500 mt-1">All Cows Eat Grass</div>
+              <div class="p-3 bg-blue-50 rounded-lg">
+                <div class="text-xs font-semibold text-blue-700">Spaces</div>
+                <div class="text-lg font-bold text-blue-900">F A C E</div>
+                <div class="text-xs text-blue-600">"FACE"</div>
               </div>
             </div>
           </div>
         </section>
 
-        <!-- PRACTICE -->
-        <section id="view-practice" class="hidden space-y-4">
-          <div class="bg-white rounded-2xl p-4 shadow-sm">
-            <div class="flex items-center justify-between">
-              <div>
-                <h2 class="font-bold text-lg text-slate-900">Practice</h2>
-                <p class="text-sm text-slate-600 mt-0.5">Identify the note on the staff. Labels are hidden here.</p>
-              </div>
-
-              <div class="flex items-center gap-2">
-                <label class="text-xs text-slate-500">Force clef</label>
-                <select id="force-clef" class="text-sm py-1 px-2 rounded-md bg-slate-50 border border-slate-200">
-                  <option value="random">Random</option>
-                  <option value="treble">Treble</option>
-                  <option value="bass">Bass</option>
-                </select>
-              </div>
-            </div>
-
-            <div id="practice-card" class="mt-3 p-3 rounded-md staff-card" role="region" aria-live="polite">
-              <div id="practice-staff" class="stave-wrap" aria-hidden="false"></div>
-            </div>
-
-            <div class="mt-4">
-              <div class="grid grid-cols-7 gap-2">
-                <button class="note-btn py-3 rounded-lg font-bold bg-slate-100 hover:bg-slate-200 transition" data-letter="A">A</button>
-                <button class="note-btn py-3 rounded-lg font-bold bg-slate-100 hover:bg-slate-200 transition" data-letter="B">B</button>
-                <button class="note-btn py-3 rounded-lg font-bold bg-slate-100 hover:bg-slate-200 transition" data-letter="C">C</button>
-                <button class="note-btn py-3 rounded-lg font-bold bg-slate-100 hover:bg-slate-200 transition" data-letter="D">D</button>
-                <button class="note-btn py-3 rounded-lg font-bold bg-slate-100 hover:bg-slate-200 transition" data-letter="E">E</button>
-                <button class="note-btn py-3 rounded-lg font-bold bg-slate-100 hover:bg-slate-200 transition" data-letter="F">F</button>
-                <button class="note-btn py-3 rounded-lg font-bold bg-slate-100 hover:bg-slate-200 transition" data-letter="G">G</button>
-              </div>
-
-              <div class="flex items-center justify-between mt-4 gap-2">
-                <div id="feedback-area" class="text-sm text-slate-500">Pick the note letter that matches the note above.</div>
-
-                <div class="flex items-center gap-2">
-                  <button id="next-note" class="py-2 px-3 bg-indigo-600 text-white rounded-lg font-semibold shadow hover:bg-indigo-700 transition">Next Note</button>
-                </div>
-              </div>
-            </div>
+        <!-- Practice Section -->
+        <section id="practice-view" class="hidden space-y-6">
+          <div class="flex justify-between items-center">
+            <h2 class="text-lg font-bold text-slate-900">Practice</h2>
+            <div class="text-sm text-slate-600">Score: <span id="score" class="font-bold">0</span> / <span id="total">0</span></div>
           </div>
 
-          <div class="bg-white rounded-2xl p-3 shadow-sm">
-            <div class="text-sm text-slate-600">Tip: Limit distractions, practice bursts of 20–30 notes for rapid recognition.</div>
+          <div class="staff">
+            <div class="staff-line" style="top: 40px;"></div>
+            <div class="staff-line" style="top: 70px;"></div>
+            <div class="staff-line" style="top: 100px;"></div>
+            <div class="staff-line" style="top: 130px;"></div>
+            <div class="staff-line" style="top: 160px;"></div>
+            <div class="text-sm text-slate-400" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">𝄞</div>
+            <div id="practice-note" style="position: relative; height: 100%;"></div>
+          </div>
+
+          <div class="feedback" id="feedback"></div>
+
+          <div class="grid grid-cols-4 gap-2">
+            <button class="btn-note note-option" data-note="C">C</button>
+            <button class="btn-note note-option" data-note="D">D</button>
+            <button class="btn-note note-option" data-note="E">E</button>
+            <button class="btn-note note-option" data-note="F">F</button>
+            <button class="btn-note note-option" data-note="G">G</button>
+            <button class="btn-note note-option" data-note="A">A</button>
+            <button class="btn-note note-option" data-note="B">B</button>
+            <button class="btn-note note-option" data-note="C" data-octave="5">C5</button>
           </div>
         </section>
       </div>
     </main>
 
-    <!-- Bottom nav -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 bottom-safe">
-      <div class="max-w-xl mx-auto flex justify-between items-center px-4 py-3">
-        <button id="tab-learn" class="flex-1 py-2 px-3 mr-2 rounded-xl bg-indigo-600 text-white shadow flex items-center justify-center gap-2 hover:bg-indigo-700 transition" aria-pressed="true">
-          <!-- book icon (inline svg) -->
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10c0 1.1.9 2 2 2h12a2 2 0 002-2V7"></path></svg>
-          <span class="text-sm font-semibold">Learning</span>
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 py-3">
+      <div class="max-w-2xl mx-auto flex gap-3">
+        <button id="btn-learn" class="flex-1 py-3 px-4 rounded-lg font-semibold transition bg-indigo-600 text-white">
+          📚 Learn
         </button>
-
-        <button id="tab-practice" class="flex-1 py-2 px-3 ml-2 rounded-xl bg-slate-50 text-slate-700 flex items-center justify-center gap-2 hover:bg-slate-100 transition" aria-pressed="false">
-          <!-- play icon -->
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 3v18l15-9L5 3z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-          <span class="text-sm font-semibold">Practice</span>
+        <button id="btn-practice" class="flex-1 py-3 px-4 rounded-lg font-semibold transition bg-slate-100 text-slate-700 hover:bg-slate-200">
+          🎵 Practice
         </button>
       </div>
     </nav>
+  </div>
 
   <script>
-  (function(){
-    // Wait for VexFlow to load
-    if(typeof Vex === 'undefined') {
-      console.error('VexFlow not loaded');
-      return;
-    }
+    // Note positions on treble clef (in pixels from top)
+    const notePositions = {
+      'E': 160,  // line 5
+      'F': 145,  // space 4
+      'G': 130,  // line 4
+      'A': 115,  // space 3
+      'B': 100,  // line 3
+      'C': 85,   // space 2
+      'D': 70,   // line 2
+      'E5': 55,  // space 1
+      'F5': 40   // line 1
+    };
 
-    const VF = Vex.Flow;
+    const notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+    let currentNote = null;
+    let score = 0;
+    let total = 0;
 
-    // Elements
-    const viewLearn = document.getElementById('view-learn');
-    const viewPractice = document.getElementById('view-practice');
-    const tabLearnBtn = document.getElementById('tab-learn');
-    const tabPracticeBtn = document.getElementById('tab-practice');
-
-    // Practice elements
-    const practiceStaffWrap = document.getElementById('practice-staff');
-    const practiceCard = document.getElementById('practice-card');
-    const feedbackArea = document.getElementById('feedback-area');
-    const nextBtn = document.getElementById('next-note');
-    const forceClefSelect = document.getElementById('force-clef');
-    const noteButtons = Array.from(document.querySelectorAll('.note-btn'));
-
-    // Learning staff IDs
-    const trebleWrap = document.getElementById('treble-staff');
-    const bassWrap = document.getElementById('bass-staff');
-
-    // Letters
-    const LETTERS = ['A','B','C','D','E','F','G'];
-
-    // Application state
-    let currentAnswer = null;
-    let currentClef = 'treble';
-
-    // Utility to map letter -> VexFlow key appropriate to clef
-    function pickKeyForLetter(letter, clef){
-      const l = letter.toLowerCase();
-      if(clef === 'treble'){
-        const map = { a: 'a/4', b: 'b/4', c: 'c/5', d: 'd/5', e: 'e/5', f: 'f/4', g: 'g/4' };
-        return map[l] || 'c/5';
-      } else {
-        const map = { a: 'a/2', b: 'b/2', c: 'c/3', d: 'd/3', e: 'e/3', f: 'f/2', g: 'g/2' };
-        return map[l] || 'c/3';
-      }
-    }
-
-    // Render a staff with proper VexFlow 4.x API
-    function renderStaff(container, clef, keys, showNoteNames = false, singleNote = false){
-      if(!container) return;
-      
+    // Render a note on the staff
+    function renderNote(container, noteName) {
       container.innerHTML = '';
+      const pos = notePositions[noteName];
+      if (pos !== undefined) {
+        const noteEl = document.createElement('div');
+        noteEl.className = 'note';
+        noteEl.style.top = (pos - 20) + 'px';
+        noteEl.innerHTML = '●';
+        container.appendChild(noteEl);
+      }
+    }
+
+    // Show learn view
+    function showLearn() {
+      document.getElementById('learn-view').classList.remove('hidden');
+      document.getElementById('practice-view').classList.add('hidden');
+      document.getElementById('btn-learn').classList.add('bg-indigo-600', 'text-white');
+      document.getElementById('btn-learn').classList.remove('bg-slate-100', 'text-slate-700');
+      document.getElementById('btn-practice').classList.add('bg-slate-100', 'text-slate-700');
+      document.getElementById('btn-practice').classList.remove('bg-indigo-600', 'text-white');
       
-      // Ensure container has a size
-      const width = container.clientWidth || 400;
-      const height = 150;
-      
-      try {
-        const renderer = new VF.Renderer(container, VF.Renderer.Backends.SVG);
-        renderer.resize(width, height);
-        const context = renderer.getContext();
-
-        // Create stave
-        const stave = new VF.Stave(10, 20, width - 20);
-        stave.addClef(clef);
-        stave.setContext(context);
-        stave.draw();
-
-        if(!keys || keys.length === 0) return;
-
-        // Create notes
-        const notes = keys.map((k) => {
-          const noteKeys = Array.isArray(k) ? k : [k];
-          const note = new VF.StaveNote({ 
-            clef: clef, 
-            keys: noteKeys, 
-            duration: 'q',
-            auto_stem: true
-          });
-          
-          // Add annotation (note name) if requested
-          if(showNoteNames && !singleNote){
-            const noteName = noteKeys[0].split('/')[0].toUpperCase();
-            note.addModifier(0, new VF.Annotation(noteName)
-              .setFont('Arial', 12, 'bold')
-              .setVerticalJustification(VF.Annotation.VerticalJustify.BOTTOM));
-          }
-          return note;
-        });
-
-        // Format and draw
-        const numBeats = Math.max(4, notes.length);
-        const voice = new VF.Voice({
-          num_beats: numBeats,
-          beat_value: 4
-        });
-        voice.addTickables(notes);
-
-        new VF.Formatter()
-          .joinVoices([voice])
-          .format([voice], width - 80);
-
-        voice.draw(context, stave);
-      } catch (e) {
-        console.error('Error rendering staff:', e);
-        container.innerHTML = '<div class="text-red-500 text-sm p-2">Error rendering staff</div>';
-      }
+      // Render all notes in learn view
+      const learnNotes = document.getElementById('learn-notes');
+      learnNotes.innerHTML = '';
+      notes.forEach((note, idx) => {
+        const pos = notePositions[note];
+        const noteEl = document.createElement('div');
+        noteEl.className = 'note';
+        noteEl.style.top = (pos - 20) + 'px';
+        noteEl.style.left = (50 + idx * 35) + 'px';
+        noteEl.innerHTML = `●<div class="note-label">${note}</div>`;
+        learnNotes.appendChild(noteEl);
+      });
     }
 
-    // Render the learn visuals
-    function renderLearnVisuals(){
-      const trebleKeys = ['e/4','f/4','g/4','a/4','b/4','c/5','d/5','e/5'];
-      const bassKeys = ['g/2','a/2','b/2','c/3','d/3','e/3','f/3','g/3'];
-
-      renderStaff(trebleWrap, 'treble', trebleKeys, true, false);
-      renderStaff(bassWrap, 'bass', bassKeys, true, false);
+    // Show practice view
+    function showPractice() {
+      document.getElementById('learn-view').classList.add('hidden');
+      document.getElementById('practice-view').classList.remove('hidden');
+      document.getElementById('btn-practice').classList.add('bg-indigo-600', 'text-white');
+      document.getElementById('btn-practice').classList.remove('bg-slate-100', 'text-slate-700');
+      document.getElementById('btn-learn').classList.add('bg-slate-100', 'text-slate-700');
+      document.getElementById('btn-learn').classList.remove('bg-indigo-600', 'text-white');
+      nextQuestion();
     }
 
-    // Initialize practice
-    function initPractice(){
-      const forced = forceClefSelect.value;
-      const chosenClef = (forced === 'random') ? (Math.random() > 0.5 ? 'treble' : 'bass') : forced;
-      currentClef = chosenClef;
-      const letter = LETTERS[Math.floor(Math.random()*LETTERS.length)];
-      const key = pickKeyForLetter(letter, chosenClef);
-      currentAnswer = letter;
-
-      renderStaff(practiceStaffWrap, chosenClef, [key], false, true);
-
-      feedbackArea.textContent = 'Pick the note letter that matches the note above.';
-      practiceCard.classList.remove('flash-correct','flash-wrong');
+    // Generate next practice question
+    function nextQuestion() {
+      currentNote = notes[Math.floor(Math.random() * notes.length)];
+      renderNote(document.getElementById('practice-note'), currentNote);
+      document.getElementById('feedback').textContent = '';
+      document.getElementById('feedback').className = 'feedback';
+      document.querySelectorAll('.note-option').forEach(btn => {
+        btn.classList.remove('active');
+      });
     }
 
-    // Guess handler
-    function guess(letter){
-      if(!currentAnswer) return;
-      if(letter === currentAnswer){
-        feedbackArea.textContent = '✓ Correct — nice!';
-        practiceCard.classList.remove('flash-wrong');
-        practiceCard.classList.add('flash-correct');
-        setTimeout(() => initPractice(), 700);
+    // Handle answer
+    function checkAnswer(selected) {
+      total++;
+      if (selected === currentNote) {
+        score++;
+        document.getElementById('feedback').textContent = '✓ Correct!';
+        document.getElementById('feedback').classList.add('correct');
+        document.getElementById('score').textContent = score;
+        document.getElementById('total').textContent = total;
+        setTimeout(nextQuestion, 800);
       } else {
-        feedbackArea.textContent = '✗ Incorrect — try again';
-        practiceCard.classList.remove('flash-correct');
-        practiceCard.classList.add('flash-wrong');
+        document.getElementById('feedback').textContent = `✗ Wrong. It's ${currentNote}`;
+        document.getElementById('feedback').classList.add('incorrect');
+        document.getElementById('total').textContent = total;
       }
     }
 
-    // Tab switching
-    function setTab(name){
-      if(name === 'learn'){
-        viewLearn.classList.remove('hidden');
-        viewPractice.classList.add('hidden');
-        tabLearnBtn.classList.add('bg-indigo-600','text-white');
-        tabLearnBtn.classList.remove('bg-slate-50','text-slate-700');
-        tabPracticeBtn.classList.remove('bg-indigo-600','text-white');
-        tabPracticeBtn.classList.add('bg-slate-50','text-slate-700');
-        tabLearnBtn.setAttribute('aria-pressed', 'true');
-        tabPracticeBtn.setAttribute('aria-pressed', 'false');
-      } else {
-        viewLearn.classList.add('hidden');
-        viewPractice.classList.remove('hidden');
-        tabPracticeBtn.classList.add('bg-indigo-600','text-white');
-        tabPracticeBtn.classList.remove('bg-slate-50','text-slate-700');
-        tabLearnBtn.classList.remove('bg-indigo-600','text-white');
-        tabLearnBtn.classList.add('bg-slate-50','text-slate-700');
-        tabLearnBtn.setAttribute('aria-pressed', 'false');
-        tabPracticeBtn.setAttribute('aria-pressed', 'true');
-        setTimeout(initPractice, 100);
-      }
-    }
+    // Event listeners
+    document.getElementById('btn-learn').addEventListener('click', showLearn);
+    document.getElementById('btn-practice').addEventListener('click', showPractice);
 
-    // Event wiring
-    tabLearnBtn.addEventListener('click', () => setTab('learn'));
-    tabPracticeBtn.addEventListener('click', () => setTab('practice'));
-    nextBtn.addEventListener('click', initPractice);
-    forceClefSelect.addEventListener('change', initPractice);
-
-    noteButtons.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const letter = btn.getAttribute('data-letter');
-        guess(letter);
+    document.querySelectorAll('.note-option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const selected = btn.dataset.note;
+        checkAnswer(selected);
       });
     });
 
-    // Responsive: re-render staff visuals on resize (debounced)
-    let resizeTimer = null;
-    window.addEventListener('resize', () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
-        if(!viewLearn.classList.contains('hidden')){
-          renderLearnVisuals();
-        } else {
-          initPractice();
-        }
-      }, 140);
-    });
-
-    // Initial render - delay slightly to ensure DOM is ready
-    setTimeout(() => {
-      renderLearnVisuals();
-      setTab('learn');
-    }, 50);
-
-    // Accessibility: allow keyboard letters A-G in practice
-    window.addEventListener('keydown', (ev) => {
-      const key = ev.key.toUpperCase();
-      if(viewPractice.classList.contains('hidden')) return;
-      if(LETTERS.includes(key)) {
-        ev.preventDefault();
-        guess(key);
-      }
-      if(key === 'N') {
-        ev.preventDefault();
-        initPractice();
-      }
-    });
-  })();
+    // Initialize
+    showLearn();
   </script>
 </body>
 </html>
