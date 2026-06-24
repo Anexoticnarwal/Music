@@ -29,8 +29,8 @@
     @keyframes flashRed { 0% { box-shadow: 0 0 0 4px rgba(239,68,68,0.10);} 100% { box-shadow: none; } }
 
     /* small improvements for VexFlow containers */
-    .staff-card { background:#fff; border:1px solid #eef2ff; border-radius:12px; padding:10px; }
-    .stave-wrap { width:100%; }
+    .staff-card { background:#fff; border:1px solid #eef2ff; border-radius:12px; padding:10px; min-height:140px; }
+    .stave-wrap { width:100%; min-height:120px; display: flex; align-items: center; justify-content: center; }
     /* visually hide (but still accessible) note annotations in practice */
     .sr-only-vis { position: absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
   </style>
@@ -128,20 +128,20 @@
 
             <div class="mt-4">
               <div class="grid grid-cols-7 gap-2">
-                <button class="note-btn py-3 rounded-lg font-bold bg-slate-100" data-letter="A">A</button>
-                <button class="note-btn py-3 rounded-lg font-bold bg-slate-100" data-letter="B">B</button>
-                <button class="note-btn py-3 rounded-lg font-bold bg-slate-100" data-letter="C">C</button>
-                <button class="note-btn py-3 rounded-lg font-bold bg-slate-100" data-letter="D">D</button>
-                <button class="note-btn py-3 rounded-lg font-bold bg-slate-100" data-letter="E">E</button>
-                <button class="note-btn py-3 rounded-lg font-bold bg-slate-100" data-letter="F">F</button>
-                <button class="note-btn py-3 rounded-lg font-bold bg-slate-100" data-letter="G">G</button>
+                <button class="note-btn py-3 rounded-lg font-bold bg-slate-100 hover:bg-slate-200 transition" data-letter="A">A</button>
+                <button class="note-btn py-3 rounded-lg font-bold bg-slate-100 hover:bg-slate-200 transition" data-letter="B">B</button>
+                <button class="note-btn py-3 rounded-lg font-bold bg-slate-100 hover:bg-slate-200 transition" data-letter="C">C</button>
+                <button class="note-btn py-3 rounded-lg font-bold bg-slate-100 hover:bg-slate-200 transition" data-letter="D">D</button>
+                <button class="note-btn py-3 rounded-lg font-bold bg-slate-100 hover:bg-slate-200 transition" data-letter="E">E</button>
+                <button class="note-btn py-3 rounded-lg font-bold bg-slate-100 hover:bg-slate-200 transition" data-letter="F">F</button>
+                <button class="note-btn py-3 rounded-lg font-bold bg-slate-100 hover:bg-slate-200 transition" data-letter="G">G</button>
               </div>
 
               <div class="flex items-center justify-between mt-4 gap-2">
                 <div id="feedback-area" class="text-sm text-slate-500">Pick the note letter that matches the note above.</div>
 
                 <div class="flex items-center gap-2">
-                  <button id="next-note" class="py-2 px-3 bg-indigo-600 text-white rounded-lg font-semibold shadow">Next Note</button>
+                  <button id="next-note" class="py-2 px-3 bg-indigo-600 text-white rounded-lg font-semibold shadow hover:bg-indigo-700 transition">Next Note</button>
                 </div>
               </div>
             </div>
@@ -157,15 +157,15 @@
     <!-- Bottom nav -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 bottom-safe">
       <div class="max-w-xl mx-auto flex justify-between items-center px-4 py-3">
-        <button id="tab-learn" class="flex-1 py-2 px-3 mr-2 rounded-xl bg-indigo-600 text-white shadow flex items-center justify-center gap-2" aria-pressed="true">
+        <button id="tab-learn" class="flex-1 py-2 px-3 mr-2 rounded-xl bg-indigo-600 text-white shadow flex items-center justify-center gap-2 hover:bg-indigo-700 transition" aria-pressed="true">
           <!-- book icon (inline svg) -->
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7h6v10H3zM21 7h-6v10h6z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 7v10M15 7v10"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10c0 1.1.9 2 2 2h12a2 2 0 002-2V7"></path></svg>
           <span class="text-sm font-semibold">Learning</span>
         </button>
 
-        <button id="tab-practice" class="flex-1 py-2 px-3 ml-2 rounded-xl bg-slate-50 text-slate-700 flex items-center justify-center gap-2" aria-pressed="false">
+        <button id="tab-practice" class="flex-1 py-2 px-3 ml-2 rounded-xl bg-slate-50 text-slate-700 flex items-center justify-center gap-2 hover:bg-slate-100 transition" aria-pressed="false">
           <!-- play icon -->
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 3v18l15-9L5 3z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 3v18l15-9L5 3z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
           <span class="text-sm font-semibold">Practice</span>
         </button>
       </div>
@@ -173,7 +173,12 @@
 
   <script>
   (function(){
-    // Basic DOM and VexFlow logic in plain JS
+    // Wait for VexFlow to load
+    if(typeof Vex === 'undefined') {
+      console.error('VexFlow not loaded');
+      return;
+    }
+
     const VF = Vex.Flow;
 
     // Elements
@@ -198,7 +203,7 @@
     const LETTERS = ['A','B','C','D','E','F','G'];
 
     // Application state
-    let currentAnswer = null; // letter
+    let currentAnswer = null;
     let currentClef = 'treble';
 
     // Utility to map letter -> VexFlow key appropriate to clef
@@ -213,51 +218,70 @@
       }
     }
 
-    // Render a staff with an array of keys; showNoteNames toggles annotations; singleNote centers one note
+    // Render a staff with proper VexFlow 4.x API
     function renderStaff(container, clef, keys, showNoteNames = false, singleNote = false){
       if(!container) return;
+      
       container.innerHTML = '';
-      const width = Math.max(260, container.clientWidth || 320);
-      const height = 96;
-      const renderer = new VF.Renderer(container, VF.Renderer.Backends.SVG);
-      renderer.resize(width, height);
-      const context = renderer.getContext();
-      context.setFont('Arial', 10, '');
-      context.setBackgroundFillStyle('#fff');
+      
+      // Ensure container has a size
+      const width = container.clientWidth || 400;
+      const height = 150;
+      
+      try {
+        const renderer = new VF.Renderer(container, VF.Renderer.Backends.SVG);
+        renderer.resize(width, height);
+        const context = renderer.getContext();
 
-      const stave = new VF.Stave(6, 8, width - 12);
-      stave.addClef(clef).setContext(context).draw();
+        // Create stave
+        const stave = new VF.Stave(10, 20, width - 20);
+        stave.addClef(clef);
+        stave.setContext(context);
+        stave.draw();
 
-      if(!keys || keys.length === 0) return;
-      const notes = keys.map((k) => {
-        const note = new VF.StaveNote({ clef: clef, keys: Array.isArray(k) ? k : [k], duration: 'q' });
-        if(showNoteNames && !singleNote){
-          const name = (Array.isArray(k) ? k[0] : k).split('/')[0].toUpperCase();
-          const annotation = new VF.Annotation(name).setFont('Arial', 12).setVerticalJustification(VF.Annotation.VerticalJustify.BOTTOM);
-          note.addModifier(0, annotation);
-        }
-        return note;
-      });
+        if(!keys || keys.length === 0) return;
 
-      // For single note, center it
-      if(singleNote && notes.length === 1){
-        const voice = new VF.Voice({ num_beats: 1, beat_value: 4 });
-        voice.addTickables([notes[0]]);
-        new VF.Formatter().joinVoices([voice]).format([voice], width - 120);
+        // Create notes
+        const notes = keys.map((k) => {
+          const noteKeys = Array.isArray(k) ? k : [k];
+          const note = new VF.StaveNote({ 
+            clef: clef, 
+            keys: noteKeys, 
+            duration: 'q',
+            auto_stem: true
+          });
+          
+          // Add annotation (note name) if requested
+          if(showNoteNames && !singleNote){
+            const noteName = noteKeys[0].split('/')[0].toUpperCase();
+            note.addModifier(0, new VF.Annotation(noteName)
+              .setFont('Arial', 12, 'bold')
+              .setVerticalJustification(VF.Annotation.VerticalJustify.BOTTOM));
+          }
+          return note;
+        });
+
+        // Format and draw
+        const numBeats = Math.max(4, notes.length);
+        const voice = new VF.Voice({
+          num_beats: numBeats,
+          beat_value: 4
+        });
+        voice.addTickables(notes);
+
+        new VF.Formatter()
+          .joinVoices([voice])
+          .format([voice], width - 80);
+
         voice.draw(context, stave);
-        return;
+      } catch (e) {
+        console.error('Error rendering staff:', e);
+        container.innerHTML = '<div class="text-red-500 text-sm p-2">Error rendering staff</div>';
       }
-
-      const beats = Math.max(4, notes.length);
-      const voice = new VF.Voice({ num_beats: beats, beat_value: 4 });
-      voice.addTickables(notes);
-      new VF.Formatter().joinVoices([voice]).format([voice], width - 80);
-      voice.draw(context, stave);
     }
 
-    // Render the learn visuals with labeled notes and acronyms
+    // Render the learn visuals
     function renderLearnVisuals(){
-      // Treble: show both lines and spaces: choose a set of representative notes across middle region
       const trebleKeys = ['e/4','f/4','g/4','a/4','b/4','c/5','d/5','e/5'];
       const bassKeys = ['g/2','a/2','b/2','c/3','d/3','e/3','f/3','g/3'];
 
@@ -265,7 +289,7 @@
       renderStaff(bassWrap, 'bass', bassKeys, true, false);
     }
 
-    // Initialize practice: pick clef (based on select), letter, draw single note hidden labels
+    // Initialize practice
     function initPractice(){
       const forced = forceClefSelect.value;
       const chosenClef = (forced === 'random') ? (Math.random() > 0.5 ? 'treble' : 'bass') : forced;
@@ -274,10 +298,8 @@
       const key = pickKeyForLetter(letter, chosenClef);
       currentAnswer = letter;
 
-      // draw single note with no annotations
       renderStaff(practiceStaffWrap, chosenClef, [key], false, true);
 
-      // reset feedback UI
       feedbackArea.textContent = 'Pick the note letter that matches the note above.';
       practiceCard.classList.remove('flash-correct','flash-wrong');
     }
@@ -286,13 +308,12 @@
     function guess(letter){
       if(!currentAnswer) return;
       if(letter === currentAnswer){
-        feedbackArea.textContent = 'Correct — nice!';
+        feedbackArea.textContent = '✓ Correct — nice!';
         practiceCard.classList.remove('flash-wrong');
         practiceCard.classList.add('flash-correct');
-        // small auto-advance after short delay
         setTimeout(() => initPractice(), 700);
       } else {
-        feedbackArea.textContent = 'Incorrect — try again';
+        feedbackArea.textContent = '✗ Incorrect — try again';
         practiceCard.classList.remove('flash-correct');
         practiceCard.classList.add('flash-wrong');
       }
@@ -307,6 +328,8 @@
         tabLearnBtn.classList.remove('bg-slate-50','text-slate-700');
         tabPracticeBtn.classList.remove('bg-indigo-600','text-white');
         tabPracticeBtn.classList.add('bg-slate-50','text-slate-700');
+        tabLearnBtn.setAttribute('aria-pressed', 'true');
+        tabPracticeBtn.setAttribute('aria-pressed', 'false');
       } else {
         viewLearn.classList.add('hidden');
         viewPractice.classList.remove('hidden');
@@ -314,8 +337,9 @@
         tabPracticeBtn.classList.remove('bg-slate-50','text-slate-700');
         tabLearnBtn.classList.remove('bg-indigo-600','text-white');
         tabLearnBtn.classList.add('bg-slate-50','text-slate-700');
-        // ensure practice staff fits
-        setTimeout(initPractice, 60);
+        tabLearnBtn.setAttribute('aria-pressed', 'false');
+        tabPracticeBtn.setAttribute('aria-pressed', 'true');
+        setTimeout(initPractice, 100);
       }
     }
 
@@ -345,17 +369,24 @@
       }, 140);
     });
 
-    // Initial render
-    renderLearnVisuals();
-    // show Learn by default; Practice will init when user opens it
-    setTab('learn');
+    // Initial render - delay slightly to ensure DOM is ready
+    setTimeout(() => {
+      renderLearnVisuals();
+      setTab('learn');
+    }, 50);
 
-    // Accessibility: allow keyboard letters A-G in practice when practice is active
+    // Accessibility: allow keyboard letters A-G in practice
     window.addEventListener('keydown', (ev) => {
       const key = ev.key.toUpperCase();
       if(viewPractice.classList.contains('hidden')) return;
-      if(LETTERS.includes(key)) guess(key);
-      if(key === 'N') initPractice(); // quick Next with 'N'
+      if(LETTERS.includes(key)) {
+        ev.preventDefault();
+        guess(key);
+      }
+      if(key === 'N') {
+        ev.preventDefault();
+        initPractice();
+      }
     });
   })();
   </script>
