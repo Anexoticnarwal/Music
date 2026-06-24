@@ -23,28 +23,45 @@
       height: 2px;
       background: #ccc;
     }
-    .note {
+    .note-container {
       position: absolute;
       width: 40px;
-      height: 40px;
-      background: #4f46e5;
-      border-radius: 50%;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: bold;
-      font-size: 18px;
-      left: 80px;
+    }
+    .note-head {
+      width: 20px;
+      height: 16px;
+      background: #1f2937;
+      border-radius: 50%;
+      margin-bottom: -8px;
+      z-index: 10;
+    }
+    .note-stem {
+      width: 2px;
+      height: 35px;
+      background: #1f2937;
+      margin-top: 0;
     }
     .note-label {
       position: absolute;
-      bottom: -25px;
+      bottom: -30px;
       left: 50%;
       transform: translateX(-50%);
       font-size: 12px;
       color: #666;
       font-weight: bold;
+      white-space: nowrap;
+    }
+    .middle-c-marker {
+      position: absolute;
+      font-size: 10px;
+      color: #ef4444;
+      font-weight: bold;
+      left: -15px;
+      top: 50%;
+      transform: translateY(-50%);
     }
     .btn-note {
       padding: 12px 20px;
@@ -89,6 +106,11 @@
       align-items: center;
       margin-bottom: 20px;
     }
+    .scale-note-container {
+      position: relative;
+      height: 50px;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
@@ -108,7 +130,8 @@
         <section id="learn-view" class="space-y-8">
           <!-- Treble Clef -->
           <div>
-            <h2 class="text-lg font-bold text-slate-900 mb-4">Treble Clef</h2>
+            <h2 class="text-lg font-bold text-slate-900 mb-4">Treble Clef - Full Scale</h2>
+            <p class="text-sm text-slate-600 mb-3">Middle C and one octave</p>
             <div class="staff">
               <div class="staff-line" style="top: 40px;"></div>
               <div class="staff-line" style="top: 70px;"></div>
@@ -134,7 +157,8 @@
 
           <!-- Bass Clef -->
           <div>
-            <h2 class="text-lg font-bold text-slate-900 mb-4">Bass Clef</h2>
+            <h2 class="text-lg font-bold text-slate-900 mb-4">Bass Clef - Full Scale</h2>
+            <p class="text-sm text-slate-600 mb-3">Middle C and one octave</p>
             <div class="staff">
               <div class="staff-line" style="top: 40px;"></div>
               <div class="staff-line" style="top: 70px;"></div>
@@ -186,14 +210,14 @@
           <div class="feedback" id="feedback"></div>
 
           <div class="grid grid-cols-4 gap-2">
-            <button class="btn-note note-option" data-note="C">C</button>
+            <button class="btn-note note-option" data-note="C4">C4</button>
             <button class="btn-note note-option" data-note="D">D</button>
             <button class="btn-note note-option" data-note="E">E</button>
             <button class="btn-note note-option" data-note="F">F</button>
             <button class="btn-note note-option" data-note="G">G</button>
             <button class="btn-note note-option" data-note="A">A</button>
             <button class="btn-note note-option" data-note="B">B</button>
-            <button class="btn-note note-option" data-note="C" data-octave="5">C5</button>
+            <button class="btn-note note-option" data-note="C5">C5</button>
           </div>
         </section>
       </div>
@@ -213,31 +237,32 @@
   </div>
 
   <script>
-    // Treble Clef note positions
+    // Treble Clef note positions - full octave from C to C
     const treblePositions = {
-      'C': 85,   // space 2
-      'D': 70,   // line 2
-      'E': 160,  // line 5
-      'F': 145,  // space 4
-      'G': 130,  // line 4
-      'A': 115,  // space 3
-      'B': 100,  // line 3
-      'C5': 55   // space 1
+      'C4': 185,  // Middle C (ledger line below)
+      'D': 170,   // space
+      'E': 160,   // line 5
+      'F': 145,   // space 4
+      'G': 130,   // line 4
+      'A': 115,   // space 3
+      'B': 100,   // line 3
+      'C5': 85    // line 2
     };
 
-    // Bass Clef note positions
+    // Bass Clef note positions - full octave from C to C
     const bassPositions = {
-      'A': 160,  // line 5
-      'B': 145,  // space 4
-      'C': 130,  // line 4
-      'D': 115,  // space 3
-      'E': 100,  // line 3
-      'F': 85,   // space 2
-      'G': 70    // line 2
+      'C3': 185,  // Middle C (ledger line above)
+      'D': 170,   // space
+      'E': 160,   // line 5
+      'F': 145,   // space 4
+      'G': 130,   // line 4
+      'A': 115,   // space 3
+      'B': 100,   // line 3
+      'C': 85     // line 2
     };
 
-    const trebleNotes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
-    const bassNotes = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+    const trebleNotes = ['C4', 'D', 'E', 'F', 'G', 'A', 'B', 'C5'];
+    const bassNotes = ['C3', 'D', 'E', 'F', 'G', 'A', 'B', 'C'];
     const clefs = [
       { name: 'treble', symbol: '𝄞', notes: trebleNotes, positions: treblePositions },
       { name: 'bass', symbol: '𝄢', notes: bassNotes, positions: bassPositions }
@@ -253,7 +278,8 @@
 
     // Frequency map for notes (in Hz)
     const noteFrequencies = {
-      'C': 261.63,
+      'C3': 130.81,
+      'C4': 261.63,
       'D': 293.66,
       'E': 329.63,
       'F': 349.23,
@@ -288,16 +314,25 @@
       }
     }
 
-    // Render a note on the staff
+    // Render a note on the staff with proper musical notation
     function renderNote(container, noteName, positions) {
       container.innerHTML = '';
       const pos = positions[noteName];
       if (pos !== undefined) {
-        const noteEl = document.createElement('div');
-        noteEl.className = 'note';
-        noteEl.style.top = (pos - 20) + 'px';
-        noteEl.innerHTML = '●';
-        container.appendChild(noteEl);
+        const noteContainer = document.createElement('div');
+        noteContainer.className = 'note-container';
+        noteContainer.style.top = (pos - 30) + 'px';
+        noteContainer.style.left = '80px';
+        
+        const noteHead = document.createElement('div');
+        noteHead.className = 'note-head';
+        
+        const noteStem = document.createElement('div');
+        noteStem.className = 'note-stem';
+        
+        noteContainer.appendChild(noteHead);
+        noteContainer.appendChild(noteStem);
+        container.appendChild(noteContainer);
       }
     }
 
@@ -315,12 +350,31 @@
       trebleNotesContainer.innerHTML = '';
       trebleNotes.forEach((note, idx) => {
         const pos = treblePositions[note];
-        const noteEl = document.createElement('div');
-        noteEl.className = 'note';
-        noteEl.style.top = (pos - 20) + 'px';
-        noteEl.style.left = (50 + idx * 35) + 'px';
-        noteEl.innerHTML = `●<div class="note-label">${note}</div>`;
-        trebleNotesContainer.appendChild(noteEl);
+        const noteContainer = document.createElement('div');
+        noteContainer.className = 'note-container';
+        noteContainer.style.top = (pos - 30) + 'px';
+        noteContainer.style.left = (50 + idx * 40) + 'px';
+        
+        const noteHead = document.createElement('div');
+        noteHead.className = 'note-head';
+        
+        const noteStem = document.createElement('div');
+        noteStem.className = 'note-stem';
+        
+        // Add Middle C indicator
+        let label = note;
+        if (note === 'C4') {
+          label = '<span class="middle-c-marker">MC</span>' + label;
+        }
+        
+        const noteLabel = document.createElement('div');
+        noteLabel.className = 'note-label';
+        noteLabel.innerHTML = label;
+        
+        noteContainer.appendChild(noteHead);
+        noteContainer.appendChild(noteStem);
+        noteContainer.appendChild(noteLabel);
+        trebleNotesContainer.appendChild(noteContainer);
       });
 
       // Render bass notes
@@ -328,12 +382,31 @@
       bassNotesContainer.innerHTML = '';
       bassNotes.forEach((note, idx) => {
         const pos = bassPositions[note];
-        const noteEl = document.createElement('div');
-        noteEl.className = 'note';
-        noteEl.style.top = (pos - 20) + 'px';
-        noteEl.style.left = (50 + idx * 35) + 'px';
-        noteEl.innerHTML = `●<div class="note-label">${note}</div>`;
-        bassNotesContainer.appendChild(noteEl);
+        const noteContainer = document.createElement('div');
+        noteContainer.className = 'note-container';
+        noteContainer.style.top = (pos - 30) + 'px';
+        noteContainer.style.left = (50 + idx * 40) + 'px';
+        
+        const noteHead = document.createElement('div');
+        noteHead.className = 'note-head';
+        
+        const noteStem = document.createElement('div');
+        noteStem.className = 'note-stem';
+        
+        // Add Middle C indicator
+        let label = note;
+        if (note === 'C3') {
+          label = '<span class="middle-c-marker">MC</span>' + label;
+        }
+        
+        const noteLabel = document.createElement('div');
+        noteLabel.className = 'note-label';
+        noteLabel.innerHTML = label;
+        
+        noteContainer.appendChild(noteHead);
+        noteContainer.appendChild(noteStem);
+        noteContainer.appendChild(noteLabel);
+        bassNotesContainer.appendChild(noteContainer);
       });
     }
 
