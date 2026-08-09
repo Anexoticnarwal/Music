@@ -250,27 +250,31 @@
 
   <script>
     // Treble Clef note positions as percentages (responsive)
+    // Staff lines are at: 20%, 35%, 50%, 65%, 80%
+    // Spaces between are at: 27.5%, 42.5%, 57.5%, 72.5%
+    // Above/below staff: 12.5%, 87.5%
     const treblePositions = {
-      'C4': 92,   // Middle C (below staff)
-      'D': 85,    // space
-      'E': 80,    // line 5
-      'F': 72,    // space 4
-      'G': 65,    // line 4
-      'A': 57,    // space 3
-      'B': 50,    // line 3
-      'C5': 42    // line 2
+      'C5': 12.5,   // Above staff (line 2 equivalent)
+      'B': 20,      // line 5
+      'A': 27.5,    // space 4
+      'G': 35,      // line 4
+      'F': 42.5,    // space 3
+      'E': 50,      // line 3
+      'D': 57.5,    // space 2
+      'C4': 65      // line 2 (Middle C)
     };
 
     // Bass Clef note positions as percentages (responsive)
+    // Same staff configuration but different notes
     const bassPositions = {
-      'C3': 92,   // Middle C (above staff)
-      'D': 85,    // space
-      'E': 80,    // line 5
-      'F': 72,    // space 4
-      'G': 65,    // line 4
-      'A': 57,    // space 3
-      'B': 50,    // line 3
-      'C': 42     // line 2
+      'C': 12.5,    // Above staff
+      'B': 20,      // line 5
+      'A': 27.5,    // space 4
+      'G': 35,      // line 4
+      'F': 42.5,    // space 3
+      'E': 50,      // line 3
+      'D': 57.5,    // space 2
+      'C3': 65      // line 2 (Middle C)
     };
 
     const trebleNotes = ['C4', 'D', 'E', 'F', 'G', 'A', 'B', 'C5'];
