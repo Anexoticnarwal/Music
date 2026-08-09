@@ -6,10 +6,13 @@
   <title>Piano Theory Pro</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
     body { background: #f8fafc; }
     .staff { 
       position: relative; 
-      height: 200px; 
+      aspect-ratio: 16 / 6;
+      min-height: 150px;
       background: white; 
       border-radius: 12px;
       padding: 20px;
@@ -64,18 +67,23 @@
       transform: translateY(-50%);
     }
     .btn-note {
-      padding: 12px 20px;
+      padding: 12px 16px;
       font-weight: bold;
-      font-size: 16px;
+      font-size: 14px;
       border-radius: 8px;
       border: 2px solid #e2e8f0;
       background: white;
       cursor: pointer;
       transition: all 0.2s;
+      min-height: 44px;
+      touch-action: manipulation;
     }
     .btn-note:hover {
       border-color: #4f46e5;
       color: #4f46e5;
+    }
+    .btn-note:active {
+      transform: scale(0.98);
     }
     .btn-note.active {
       background: #4f46e5;
@@ -83,11 +91,14 @@
       border-color: #4f46e5;
     }
     .feedback {
-      min-height: 30px;
+      min-height: 40px;
       font-size: 18px;
       font-weight: bold;
       text-align: center;
       margin: 20px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .correct { color: #22c55e; }
     .incorrect { color: #ef4444; }
@@ -105,18 +116,19 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
+      gap: 10px;
     }
-    .scale-note-container {
-      position: relative;
-      height: 50px;
-      margin-bottom: 10px;
+    @media (max-width: 640px) {
+      .clef-label { font-size: 40px; }
+      .practice-header { flex-direction: column; align-items: flex-start; }
+      .practice-header > div:last-child { align-self: flex-end; }
     }
   </style>
 </head>
 <body>
-  <div class="min-h-screen flex flex-col pb-24">
+  <div class="min-h-screen flex flex-col pb-32">
     <!-- Header -->
-    <header class="bg-white border-b border-slate-200 px-4 py-6">
+    <header class="bg-white border-b border-slate-200 px-4 py-6 sticky top-0 z-20">
       <div class="max-w-2xl mx-auto">
         <h1 class="text-2xl font-bold text-slate-900">Piano Theory</h1>
         <p class="text-sm text-slate-600 mt-1">Learn to read musical notes</p>
@@ -132,12 +144,12 @@
           <div>
             <h2 class="text-lg font-bold text-slate-900 mb-4">Treble Clef - Full Scale</h2>
             <p class="text-sm text-slate-600 mb-3">Middle C and one octave</p>
-            <div class="staff">
-              <div class="staff-line" style="top: 40px;"></div>
-              <div class="staff-line" style="top: 70px;"></div>
-              <div class="staff-line" style="top: 100px;"></div>
-              <div class="staff-line" style="top: 130px;"></div>
-              <div class="staff-line" style="top: 160px;"></div>
+            <div class="staff" id="treble-staff">
+              <div class="staff-line" style="top: 20%;"></div>
+              <div class="staff-line" style="top: 35%;"></div>
+              <div class="staff-line" style="top: 50%;"></div>
+              <div class="staff-line" style="top: 65%;"></div>
+              <div class="staff-line" style="top: 80%;"></div>
               <div class="clef-label">𝄞</div>
               <div id="treble-notes" style="position: relative; height: 100%;"></div>
             </div>
@@ -159,12 +171,12 @@
           <div>
             <h2 class="text-lg font-bold text-slate-900 mb-4">Bass Clef - Full Scale</h2>
             <p class="text-sm text-slate-600 mb-3">Middle C and one octave</p>
-            <div class="staff">
-              <div class="staff-line" style="top: 40px;"></div>
-              <div class="staff-line" style="top: 70px;"></div>
-              <div class="staff-line" style="top: 100px;"></div>
-              <div class="staff-line" style="top: 130px;"></div>
-              <div class="staff-line" style="top: 160px;"></div>
+            <div class="staff" id="bass-staff">
+              <div class="staff-line" style="top: 20%;"></div>
+              <div class="staff-line" style="top: 35%;"></div>
+              <div class="staff-line" style="top: 50%;"></div>
+              <div class="staff-line" style="top: 65%;"></div>
+              <div class="staff-line" style="top: 80%;"></div>
               <div class="clef-label">𝄢</div>
               <div id="bass-notes" style="position: relative; height: 100%;"></div>
             </div>
@@ -194,16 +206,16 @@
           </div>
 
           <div class="staff">
-            <div class="staff-line" style="top: 40px;"></div>
-            <div class="staff-line" style="top: 70px;"></div>
-            <div class="staff-line" style="top: 100px;"></div>
-            <div class="staff-line" style="top: 130px;"></div>
-            <div class="staff-line" style="top: 160px;"></div>
+            <div class="staff-line" style="top: 20%;"></div>
+            <div class="staff-line" style="top: 35%;"></div>
+            <div class="staff-line" style="top: 50%;"></div>
+            <div class="staff-line" style="top: 65%;"></div>
+            <div class="staff-line" style="top: 80%;"></div>
             <div class="clef-label" id="practice-clef">𝄞</div>
             <div id="practice-note" style="position: relative; height: 100%;"></div>
           </div>
 
-          <button id="btn-play-sound" class="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">
+          <button id="btn-play-sound" class="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 active:bg-blue-800 transition min-h-12">
             🔊 Play Sound
           </button>
 
@@ -224,12 +236,12 @@
     </main>
 
     <!-- Bottom Navigation -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 py-3">
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 py-3 z-30">
       <div class="max-w-2xl mx-auto flex gap-3">
-        <button id="btn-learn" class="flex-1 py-3 px-4 rounded-lg font-semibold transition bg-indigo-600 text-white">
+        <button id="btn-learn" class="flex-1 py-3 px-4 rounded-lg font-semibold transition bg-indigo-600 text-white active:bg-indigo-700 min-h-12">
           📚 Learn
         </button>
-        <button id="btn-practice" class="flex-1 py-3 px-4 rounded-lg font-semibold transition bg-slate-100 text-slate-700 hover:bg-slate-200">
+        <button id="btn-practice" class="flex-1 py-3 px-4 rounded-lg font-semibold transition bg-slate-100 text-slate-700 hover:bg-slate-200 active:bg-slate-300 min-h-12">
           🎵 Practice
         </button>
       </div>
@@ -237,28 +249,28 @@
   </div>
 
   <script>
-    // Treble Clef note positions - full octave from C to C
+    // Treble Clef note positions as percentages (responsive)
     const treblePositions = {
-      'C4': 185,  // Middle C (ledger line below)
-      'D': 170,   // space
-      'E': 160,   // line 5
-      'F': 145,   // space 4
-      'G': 130,   // line 4
-      'A': 115,   // space 3
-      'B': 100,   // line 3
-      'C5': 85    // line 2
+      'C4': 92,   // Middle C (below staff)
+      'D': 85,    // space
+      'E': 80,    // line 5
+      'F': 72,    // space 4
+      'G': 65,    // line 4
+      'A': 57,    // space 3
+      'B': 50,    // line 3
+      'C5': 42    // line 2
     };
 
-    // Bass Clef note positions - full octave from C to C
+    // Bass Clef note positions as percentages (responsive)
     const bassPositions = {
-      'C3': 185,  // Middle C (ledger line above)
-      'D': 170,   // space
-      'E': 160,   // line 5
-      'F': 145,   // space 4
-      'G': 130,   // line 4
-      'A': 115,   // space 3
-      'B': 100,   // line 3
-      'C': 85     // line 2
+      'C3': 92,   // Middle C (above staff)
+      'D': 85,    // space
+      'E': 80,    // line 5
+      'F': 72,    // space 4
+      'G': 65,    // line 4
+      'A': 57,    // space 3
+      'B': 50,    // line 3
+      'C': 42     // line 2
     };
 
     const trebleNotes = ['C4', 'D', 'E', 'F', 'G', 'A', 'B', 'C5'];
@@ -272,6 +284,7 @@
     let currentNote = null;
     let score = 0;
     let total = 0;
+    let isAnswering = false;
 
     // Create audio context for generating tones
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -321,8 +334,9 @@
       if (pos !== undefined) {
         const noteContainer = document.createElement('div');
         noteContainer.className = 'note-container';
-        noteContainer.style.top = (pos - 30) + 'px';
+        noteContainer.style.top = pos + '%';
         noteContainer.style.left = '80px';
+        noteContainer.style.transform = 'translateY(-50%)';
         
         const noteHead = document.createElement('div');
         noteHead.className = 'note-head';
@@ -352,8 +366,9 @@
         const pos = treblePositions[note];
         const noteContainer = document.createElement('div');
         noteContainer.className = 'note-container';
-        noteContainer.style.top = (pos - 30) + 'px';
+        noteContainer.style.top = pos + '%';
         noteContainer.style.left = (50 + idx * 40) + 'px';
+        noteContainer.style.transform = 'translateY(-50%)';
         
         const noteHead = document.createElement('div');
         noteHead.className = 'note-head';
@@ -384,8 +399,9 @@
         const pos = bassPositions[note];
         const noteContainer = document.createElement('div');
         noteContainer.className = 'note-container';
-        noteContainer.style.top = (pos - 30) + 'px';
+        noteContainer.style.top = pos + '%';
         noteContainer.style.left = (50 + idx * 40) + 'px';
+        noteContainer.style.transform = 'translateY(-50%)';
         
         const noteHead = document.createElement('div');
         noteHead.className = 'note-head';
@@ -420,6 +436,7 @@
       document.getElementById('btn-learn').classList.remove('bg-indigo-600', 'text-white');
       score = 0;
       total = 0;
+      isAnswering = false;
       document.getElementById('score').textContent = '0';
       document.getElementById('total').textContent = '0';
       nextQuestion();
@@ -427,6 +444,7 @@
 
     // Generate next practice question
     function nextQuestion() {
+      isAnswering = false;
       // Alternate between clefs
       const clefIndex = total % 2;
       currentClef = clefs[clefIndex];
@@ -448,18 +466,27 @@
 
     // Handle answer
     function checkAnswer(selected) {
+      if (isAnswering) return;
+      isAnswering = true;
+
       total++;
+      const selectedBtn = document.querySelector(`[data-note="${selected}"]`);
+      if (selectedBtn) {
+        selectedBtn.classList.add('active');
+      }
+
       if (selected === currentNote) {
         score++;
         document.getElementById('feedback').textContent = '✓ Correct!';
         document.getElementById('feedback').classList.add('correct');
         document.getElementById('score').textContent = score;
         document.getElementById('total').textContent = total;
-        setTimeout(nextQuestion, 800);
+        setTimeout(nextQuestion, 1000);
       } else {
         document.getElementById('feedback').textContent = `✗ Wrong. It's ${currentNote}`;
         document.getElementById('feedback').classList.add('incorrect');
         document.getElementById('total').textContent = total;
+        setTimeout(nextQuestion, 1500);
       }
     }
 
