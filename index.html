@@ -20,7 +20,6 @@
     .staff-svg {
       width: 100%;
       height: auto;
-      min-height: 200px;
       display: block;
     }
     .piano-container {
@@ -132,14 +131,24 @@
       gap: 10px;
     }
     .mnemonic-initial {
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 900;
       fill: #7c3aed;
     }
     .mnemonic-text {
-      font-size: 11px;
+      font-size: 12px;
       fill: #6b7280;
       font-weight: 600;
+    }
+    .note-label {
+      font-size: 13px;
+      fill: #9ca3af;
+      font-weight: bold;
+    }
+    .clef-label {
+      font-size: 12px;
+      fill: #94a3b8;
+      font-weight: 500;
     }
     @media (max-width: 640px) {
       .practice-header { flex-direction: column; align-items: flex-start; }
@@ -153,10 +162,13 @@
         height: 100px;
       }
       .mnemonic-initial {
-        font-size: 11px;
+        font-size: 12px;
       }
       .mnemonic-text {
-        font-size: 9px;
+        font-size: 10px;
+      }
+      .note-label {
+        font-size: 11px;
       }
     }
   </style>
@@ -165,35 +177,28 @@
   <div class="min-h-screen flex flex-col pb-32">
     <!-- Header -->
     <header class="bg-white border-b border-slate-200 px-4 py-6 sticky top-0 z-20">
-      <div class="max-w-4xl mx-auto">
-        <h1 class="text-2xl font-bold text-slate-900">Piano Theory</h1>
+      <div class="max-w-6xl mx-auto">
+        <h1 class="text-2xl font-bold text-slate-900">Piano Theory Pro</h1>
         <p class="text-sm text-slate-600 mt-1">Learn to read musical notes</p>
       </div>
     </header>
 
     <!-- Main Content -->
     <main class="flex-1 overflow-auto px-4 py-6">
-      <div class="max-w-4xl mx-auto">
+      <div class="max-w-6xl mx-auto">
         <!-- Learn Section -->
         <section id="learn-view" class="space-y-8">
-          <!-- Treble Clef -->
+          <!-- Grand Staff Overview -->
           <div>
-            <h2 class="text-lg font-bold text-slate-900 mb-4">Treble Clef - Full Scale</h2>
-            <p class="text-sm text-slate-600 mb-3">Middle C and one octave</p>
-            <div class="staff-container" id="treble-staff-container"></div>
-          </div>
-
-          <!-- Bass Clef -->
-          <div>
-            <h2 class="text-lg font-bold text-slate-900 mb-4">Bass Clef - Full Scale</h2>
-            <p class="text-sm text-slate-600 mb-3">Middle C and one octave</p>
-            <div class="staff-container" id="bass-staff-container"></div>
+            <h2 class="text-lg font-bold text-slate-900 mb-2">Grand Staff - Full Overview</h2>
+            <p class="text-sm text-slate-600 mb-4">Complete scale from Middle C (C4) showing how notes appear on both treble and bass clefs</p>
+            <div class="staff-container" id="grand-staff-container"></div>
           </div>
 
           <!-- Piano -->
           <div>
-            <h2 class="text-lg font-bold text-slate-900 mb-4">Full Piano Scale</h2>
-            <p class="text-sm text-slate-600 mb-3">Click keys to hear the notes</p>
+            <h2 class="text-lg font-bold text-slate-900 mb-2">Piano Keyboard</h2>
+            <p class="text-sm text-slate-600 mb-4">Click keys to hear the notes and see where they appear on the staff</p>
             <div class="piano-container" id="piano-container"></div>
           </div>
         </section>
@@ -202,15 +207,25 @@
         <section id="practice-view" class="hidden space-y-6">
           <div class="practice-header">
             <div>
-              <h2 class="text-lg font-bold text-slate-900">Practice</h2>
-              <p class="text-sm text-slate-600 mt-1" id="clef-name">Treble Clef</p>
+              <h2 class="text-lg font-bold text-slate-900">Practice Mode</h2>
+              <p class="text-sm text-slate-600 mt-1">Identify the note on the <span id="clef-name">Treble</span> clef</p>
             </div>
             <div class="text-sm text-slate-600">Score: <span id="score" class="font-bold">0</span> / <span id="total">0</span></div>
           </div>
 
+          <!-- Practice Grand Staff for reference -->
           <div class="staff-container">
+            <p class="text-xs text-slate-500 mb-2 text-center">Reference View - See both clefs</p>
+            <svg id="practice-reference-staff" class="staff-svg" viewBox="0 0 1000 300" preserveAspectRatio="xMidYMid meet">
+              <!-- Will be filled dynamically -->
+            </svg>
+          </div>
+
+          <!-- Question Staff -->
+          <div class="staff-container">
+            <p class="text-xs text-slate-500 mb-2 text-center">Identify This Note</p>
             <svg id="practice-staff" class="staff-svg" viewBox="0 0 800 200" preserveAspectRatio="xMidYMid meet">
-              <!-- Staff lines -->
+              <!-- Staff lines will be generated -->
               <line x1="50" y1="40" x2="750" y2="40" stroke="#ccc" stroke-width="2"/>
               <line x1="50" y1="70" x2="750" y2="70" stroke="#ccc" stroke-width="2"/>
               <line x1="50" y1="100" x2="750" y2="100" stroke="#ccc" stroke-width="2"/>
@@ -231,7 +246,7 @@
 
           <div class="feedback" id="feedback"></div>
 
-          <div id="practice-buttons" class="grid grid-cols-4 gap-2">
+          <div id="practice-buttons" class="grid grid-cols-4 gap-2 sm:gap-3">
             <!-- Buttons will be dynamically generated -->
           </div>
         </section>
@@ -240,7 +255,7 @@
 
     <!-- Bottom Navigation -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 py-3 z-30">
-      <div class="max-w-4xl mx-auto flex gap-3">
+      <div class="max-w-6xl mx-auto flex gap-3">
         <button id="btn-learn" class="flex-1 py-3 px-4 rounded-lg font-semibold transition bg-indigo-600 text-white active:bg-indigo-700 min-h-12">
           📚 Learn
         </button>
@@ -252,10 +267,7 @@
   </div>
 
   <script>
-    // Staff line Y positions (SVG coordinates)
-    // Lines at: 40, 70, 100, 130, 160
-    // Spaces at: 55, 85, 115, 145
-    // Above line 1: 25
+    // Staff line Y positions for treble (top staff)
     const treblePositions = {
       'C5': 25,     // Above staff
       'B': 40,      // Line 1 (top)
@@ -267,46 +279,47 @@
       'C4': 130     // Line 4 (Middle C)
     };
 
+    // Staff line Y positions for bass (bottom staff, offset)
     const bassPositions = {
-      'C': 25,      // Above staff
-      'B': 40,      // Line 1 (top)
-      'A': 55,      // Space
-      'G': 70,      // Line 2
-      'F': 85,      // Space
-      'E': 100,     // Line 3 (middle)
-      'D': 115,     // Space
-      'C3': 130     // Line 4 (Middle C)
+      'C4': 190,    // Line 1 (top of bass staff = Middle C)
+      'B': 205,     // Space
+      'A': 220,     // Line 2
+      'G': 235,     // Space
+      'F': 250,     // Line 3 (middle)
+      'E': 265,     // Space
+      'D': 280,     // Line 4
+      'C3': 295     // Line 5 (below staff)
     };
 
     const trebleNotes = ['C4', 'D', 'E', 'F', 'G', 'A', 'B', 'C5'];
-    const bassNotes = ['C3', 'D', 'E', 'F', 'G', 'A', 'B', 'C'];
+    const bassNotes = ['C3', 'D', 'E', 'F', 'G', 'A', 'B', 'C4'];
 
     // Mnemonic data for treble and bass clefs
     const trebleMnemonics = {
       'B': { word: 'Every', line: true },
       'G': { word: 'Good', line: true },
-      'D': { word: 'Does', line: false },
+      'E': { word: 'Boys', line: true },
+      'D': { word: 'Do', line: false },
       'F': { word: 'Fine', line: false },
-      'E': { word: 'Boy', line: true },
-      'A': { word: 'FACE', line: false },
-      'C4': { word: 'MC', line: true },
-      'C5': { word: 'MC', line: false }
+      'A': { word: 'Always', line: false },
+      'C4': { word: 'Middle C', line: true },
+      'C5': { word: 'High C', line: false }
     };
 
     const bassMnemonics = {
-      'B': { word: 'Good', line: true },
-      'G': { word: 'Boys', line: true },
+      'G': { word: 'Good', line: true },
+      'B': { word: 'Boys', line: true },
       'D': { word: 'Do', line: false },
       'F': { word: 'Always', line: false },
-      'E': { word: 'Fine', line: true },
       'A': { word: 'All', line: false },
-      'C': { word: 'Cows', line: false },
-      'C3': { word: 'MC', line: true }
+      'C4': { word: 'Middle C', line: false },
+      'E': { word: 'End', line: true },
+      'C3': { word: 'Low C', line: true }
     };
     
     const clefs = [
-      { name: 'treble', symbol: '𝄞', notes: trebleNotes, positions: treblePositions, displayNotes: ['C4', 'D', 'E', 'F', 'G', 'A', 'B', 'C5'], mnemonics: trebleMnemonics },
-      { name: 'bass', symbol: '𝄢', notes: bassNotes, positions: bassPositions, displayNotes: ['C3', 'D', 'E', 'F', 'G', 'A', 'B', 'C'], mnemonics: bassMnemonics }
+      { name: 'Treble', symbol: '𝄞', notes: trebleNotes, positions: treblePositions, displayNotes: ['C4', 'D', 'E', 'F', 'G', 'A', 'B', 'C5'], mnemonics: trebleMnemonics },
+      { name: 'Bass', symbol: '𝄢', notes: bassNotes, positions: bassPositions, displayNotes: ['C3', 'D', 'E', 'F', 'G', 'A', 'B', 'C4'], mnemonics: bassMnemonics }
     ];
 
     let currentClef = null;
@@ -354,62 +367,63 @@
       }
     }
 
-    // Create SVG staff with notes and mnemonics
-    function createStaff(containerId, notes, positions, clefSymbol, mnemonics) {
-      const container = document.getElementById(containerId);
-      
-      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      svg.setAttribute('class', 'staff-svg');
-      svg.setAttribute('viewBox', '0 0 900 250');
-      svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-
+    // Create a single staff with notes
+    function createSingleStaff(svg, startY, notes, positions, clefSymbol, mnemonics, clefLabel, isGrandStaff = false) {
       // Staff lines
       for (let i = 0; i < 5; i++) {
-        const y = 50 + i * 30;
+        const y = startY + i * 30;
         const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        line.setAttribute('x1', '50');
+        line.setAttribute('x1', '80');
         line.setAttribute('y1', y);
-        line.setAttribute('x2', '850');
+        line.setAttribute('x2', isGrandStaff ? '1000' : '850');
         line.setAttribute('y2', y);
-        line.setAttribute('stroke', '#ccc');
+        line.setAttribute('stroke', '#cbd5e1');
         line.setAttribute('stroke-width', '2');
         svg.appendChild(line);
       }
 
-      // Clef
+      // Clef label (small text above/below)
+      const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      label.setAttribute('x', '25');
+      label.setAttribute('y', startY + 75);
+      label.setAttribute('class', 'clef-label');
+      label.textContent = clefLabel;
+      svg.appendChild(label);
+
+      // Clef symbol
       const clefText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      clefText.setAttribute('x', '20');
-      clefText.setAttribute('y', '125');
-      clefText.setAttribute('font-size', '80');
-      clefText.setAttribute('fill', '#9ca3af');
+      clefText.setAttribute('x', '40');
+      clefText.setAttribute('y', startY + 75);
+      clefText.setAttribute('font-size', '70');
+      clefText.setAttribute('fill', '#94a3b8');
       clefText.textContent = clefSymbol;
       svg.appendChild(clefText);
 
       // Notes with mnemonics
       notes.forEach((note, idx) => {
         const y = positions[note];
-        const x = 150 + idx * 80;
+        const x = isGrandStaff ? 150 + idx * 100 : 150 + idx * 80;
         
         // Note head
         const circle = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
         circle.setAttribute('cx', x);
         circle.setAttribute('cy', y);
-        circle.setAttribute('rx', '10');
-        circle.setAttribute('ry', '8');
+        circle.setAttribute('rx', '12');
+        circle.setAttribute('ry', '10');
         circle.setAttribute('fill', '#1f2937');
         svg.appendChild(circle);
 
         // Note stem
         const stem = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        stem.setAttribute('x1', x + 10);
+        stem.setAttribute('x1', x + 12);
         stem.setAttribute('y1', y);
-        stem.setAttribute('x2', x + 10);
-        stem.setAttribute('y2', y - 35);
+        stem.setAttribute('x2', x + 12);
+        stem.setAttribute('y2', y - 40);
         stem.setAttribute('stroke', '#1f2937');
         stem.setAttribute('stroke-width', '2');
         svg.appendChild(stem);
 
-        // Display mnemonic
+        // Display mnemonic and label
         const mnemonic = mnemonics[note];
         if (mnemonic) {
           const word = mnemonic.word;
@@ -417,11 +431,11 @@
           const rest = word.substring(1);
 
           // Position mnemonics below or above the staff
-          const mnemonicY = y > 100 ? y + 50 : y - 45;
+          const mnemonicY = mnemonic.line ? y + 55 : y - 50;
 
           // Initial (emphasized)
           const initialText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-          initialText.setAttribute('x', x - 8);
+          initialText.setAttribute('x', x - 10);
           initialText.setAttribute('y', mnemonicY);
           initialText.setAttribute('class', 'mnemonic-initial');
           initialText.setAttribute('text-anchor', 'end');
@@ -440,20 +454,95 @@
           }
 
           // Note label above stem
-          const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-          label.setAttribute('x', x);
-          label.setAttribute('y', y - 45);
-          label.setAttribute('text-anchor', 'middle');
-          label.setAttribute('font-size', '12');
-          label.setAttribute('fill', '#9ca3af');
-          label.setAttribute('font-weight', 'bold');
-          label.textContent = note;
-          svg.appendChild(label);
+          const noteLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          noteLabel.setAttribute('x', x);
+          noteLabel.setAttribute('y', y - 50);
+          noteLabel.setAttribute('text-anchor', 'middle');
+          noteLabel.setAttribute('class', 'note-label');
+          noteLabel.textContent = note;
+          svg.appendChild(noteLabel);
         }
       });
+    }
+
+    // Create grand staff (treble + bass together)
+    function createGrandStaff(containerId) {
+      const container = document.getElementById(containerId);
+      
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('class', 'staff-svg');
+      svg.setAttribute('viewBox', '0 0 1000 380');
+      svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+
+      // Create treble staff at top
+      createSingleStaff(svg, 20, trebleNotes, treblePositions, '𝄞', trebleMnemonics, 'Treble', true);
+      
+      // Add brace/connector
+      const brace = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      brace.setAttribute('x1', '75');
+      brace.setAttribute('y1', '170');
+      brace.setAttribute('x2', '75');
+      brace.setAttribute('y2', '195');
+      brace.setAttribute('stroke', '#cbd5e1');
+      brace.setAttribute('stroke-width', '1');
+      svg.appendChild(brace);
+
+      // Create bass staff below
+      createSingleStaff(svg, 200, bassNotes, bassPositions, '𝄢', bassMnemonics, 'Bass', true);
 
       container.innerHTML = '';
       container.appendChild(svg);
+    }
+
+    // Create practice reference (small grand staff)
+    function createPracticeReference(clefIndex) {
+      const svg = document.getElementById('practice-reference-staff');
+      svg.innerHTML = '';
+
+      // Treble staff
+      for (let i = 0; i < 5; i++) {
+        const y = 50 + i * 20;
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', '80');
+        line.setAttribute('y1', y);
+        line.setAttribute('x2', '950');
+        line.setAttribute('y2', y);
+        line.setAttribute('stroke', '#e2e8f0');
+        line.setAttribute('stroke-width', '1.5');
+        if (clefIndex === 0) line.setAttribute('stroke', '#cbd5e1');
+        svg.appendChild(line);
+      }
+
+      // Bass staff
+      for (let i = 0; i < 5; i++) {
+        const y = 180 + i * 20;
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', '80');
+        line.setAttribute('y1', y);
+        line.setAttribute('x2', '950');
+        line.setAttribute('y2', y);
+        line.setAttribute('stroke', '#e2e8f0');
+        line.setAttribute('stroke-width', '1.5');
+        if (clefIndex === 1) line.setAttribute('stroke', '#cbd5e1');
+        svg.appendChild(line);
+      }
+
+      // Clefs (smaller)
+      const trebleClef = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      trebleClef.setAttribute('x', '40');
+      trebleClef.setAttribute('y', '110');
+      trebleClef.setAttribute('font-size', '50');
+      trebleClef.setAttribute('fill', clefIndex === 0 ? '#475569' : '#cbd5e1');
+      trebleClef.textContent = '𝄞';
+      svg.appendChild(trebleClef);
+
+      const bassClef = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      bassClef.setAttribute('x', '40');
+      bassClef.setAttribute('y', '240');
+      bassClef.setAttribute('font-size', '50');
+      bassClef.setAttribute('fill', clefIndex === 1 ? '#475569' : '#cbd5e1');
+      bassClef.textContent = '𝄢';
+      svg.appendChild(bassClef);
     }
 
     // Create piano visualization
@@ -462,7 +551,6 @@
       const pianoDiv = document.createElement('div');
       pianoDiv.className = 'piano-keys';
 
-      // White keys: C, D, E, F, G, A, B
       const whiteNotes = ['C4', 'D', 'E', 'F', 'G', 'A', 'B', 'C5'];
       
       whiteNotes.forEach(note => {
@@ -483,7 +571,6 @@
         
         pianoDiv.appendChild(key);
 
-        // Add black keys after C, D, E, F, G, A (not after B or final C)
         if (note !== 'B' && note !== 'C5') {
           const blackKey = document.createElement('div');
           blackKey.className = 'black-key';
@@ -523,21 +610,19 @@
       const y = positions[noteName];
       const x = 200;
 
-      // Note head
       const circle = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
       circle.setAttribute('cx', x);
       circle.setAttribute('cy', y);
-      circle.setAttribute('rx', '10');
-      circle.setAttribute('ry', '8');
+      circle.setAttribute('rx', '12');
+      circle.setAttribute('ry', '10');
       circle.setAttribute('fill', '#1f2937');
       group.appendChild(circle);
 
-      // Note stem
       const stem = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      stem.setAttribute('x1', x + 10);
+      stem.setAttribute('x1', x + 12);
       stem.setAttribute('y1', y);
-      stem.setAttribute('x2', x + 10);
-      stem.setAttribute('y2', y - 35);
+      stem.setAttribute('x2', x + 12);
+      stem.setAttribute('y2', y - 40);
       stem.setAttribute('stroke', '#1f2937');
       stem.setAttribute('stroke-width', '2');
       group.appendChild(stem);
@@ -567,8 +652,7 @@
       document.getElementById('btn-practice').classList.add('bg-slate-100', 'text-slate-700');
       document.getElementById('btn-practice').classList.remove('bg-indigo-600', 'text-white');
       
-      createStaff('treble-staff-container', trebleNotes, treblePositions, '𝄞', trebleMnemonics);
-      createStaff('bass-staff-container', bassNotes, bassPositions, '𝄢', bassMnemonics);
+      createGrandStaff('grand-staff-container');
       createPiano();
     }
 
@@ -594,10 +678,11 @@
       currentNote = currentClef.notes[Math.floor(Math.random() * currentClef.notes.length)];
       
       document.getElementById('practice-clef-text').textContent = currentClef.symbol;
-      document.getElementById('clef-name').textContent = currentClef.name.charAt(0).toUpperCase() + currentClef.name.slice(1) + ' Clef';
+      document.getElementById('clef-name').textContent = currentClef.name;
       
       createNote(currentNote, currentClef.positions);
       createPracticeButtons(currentClef.displayNotes);
+      createPracticeReference(clefIndex);
       
       document.getElementById('feedback').textContent = '';
       document.getElementById('feedback').className = 'feedback';
