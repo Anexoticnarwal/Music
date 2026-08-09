@@ -23,6 +23,71 @@
       min-height: 150px;
       display: block;
     }
+    .piano-container {
+      width: 100%;
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      overflow-x: auto;
+    }
+    .piano-keys {
+      display: flex;
+      gap: 2px;
+      justify-content: center;
+      min-width: fit-content;
+      padding: 10px;
+    }
+    .white-key {
+      width: 50px;
+      height: 200px;
+      background: white;
+      border: 2px solid #333;
+      border-radius: 0 0 8px 8px;
+      cursor: pointer;
+      position: relative;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: all 0.1s;
+    }
+    .white-key:hover {
+      background: #f0f0f0;
+    }
+    .white-key.active {
+      background: #fbbf24;
+    }
+    .black-key {
+      width: 32px;
+      height: 130px;
+      background: #1f2937;
+      border: 2px solid #000;
+      border-radius: 0 0 6px 6px;
+      cursor: pointer;
+      position: relative;
+      margin-left: -26px;
+      margin-right: -26px;
+      z-index: 10;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+      transition: all 0.1s;
+    }
+    .black-key:hover {
+      background: #374151;
+    }
+    .black-key.active {
+      background: #fbbf24;
+    }
+    .key-label {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      font-weight: bold;
+      color: #333;
+    }
+    .black-key .key-label {
+      color: #fff;
+    }
     .btn-note {
       padding: 12px 16px;
       font-weight: bold;
@@ -66,9 +131,23 @@
       margin-bottom: 20px;
       gap: 10px;
     }
+    .acronym-label {
+      font-size: 9px;
+      fill: #7c3aed;
+      font-weight: bold;
+      font-style: italic;
+    }
     @media (max-width: 640px) {
       .practice-header { flex-direction: column; align-items: flex-start; }
       .practice-header > div:last-child { align-self: flex-end; }
+      .white-key {
+        width: 40px;
+        height: 150px;
+      }
+      .black-key {
+        width: 26px;
+        height: 100px;
+      }
     }
   </style>
 </head>
@@ -76,7 +155,7 @@
   <div class="min-h-screen flex flex-col pb-32">
     <!-- Header -->
     <header class="bg-white border-b border-slate-200 px-4 py-6 sticky top-0 z-20">
-      <div class="max-w-2xl mx-auto">
+      <div class="max-w-4xl mx-auto">
         <h1 class="text-2xl font-bold text-slate-900">Piano Theory</h1>
         <p class="text-sm text-slate-600 mt-1">Learn to read musical notes</p>
       </div>
@@ -84,7 +163,7 @@
 
     <!-- Main Content -->
     <main class="flex-1 overflow-auto px-4 py-6">
-      <div class="max-w-2xl mx-auto">
+      <div class="max-w-4xl mx-auto">
         <!-- Learn Section -->
         <section id="learn-view" class="space-y-8">
           <!-- Treble Clef -->
@@ -123,6 +202,13 @@
                 <div class="text-sm text-pink-600 font-semibold italic">"All Cows Eat Grass"</div>
               </div>
             </div>
+          </div>
+
+          <!-- Piano -->
+          <div>
+            <h2 class="text-lg font-bold text-slate-900 mb-4">Full Piano Scale</h2>
+            <p class="text-sm text-slate-600 mb-3">Click keys to hear the notes</p>
+            <div class="piano-container" id="piano-container"></div>
           </div>
         </section>
 
@@ -168,7 +254,7 @@
 
     <!-- Bottom Navigation -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 py-3 z-30">
-      <div class="max-w-2xl mx-auto flex gap-3">
+      <div class="max-w-4xl mx-auto flex gap-3">
         <button id="btn-learn" class="flex-1 py-3 px-4 rounded-lg font-semibold transition bg-indigo-600 text-white active:bg-indigo-700 min-h-12">
           📚 Learn
         </button>
@@ -208,10 +294,33 @@
 
     const trebleNotes = ['C4', 'D', 'E', 'F', 'G', 'A', 'B', 'C5'];
     const bassNotes = ['C3', 'D', 'E', 'F', 'G', 'A', 'B', 'C'];
+
+    // Acronym mappings for treble and bass clefs
+    const trebleAcronyms = {
+      'B': 'Every',
+      'G': 'Good',
+      'D': 'Does',
+      'F': 'Fine',
+      'E': 'Boy',
+      'A': 'FACE',
+      'C4': 'MC',
+      'C5': 'MC'
+    };
+
+    const bassAcronyms = {
+      'B': 'Good',
+      'G': 'Boys',
+      'D': 'Fine',
+      'F': 'Always',
+      'E': 'Do',
+      'A': 'All',
+      'C': 'Cows/Eat',
+      'C3': 'MC'
+    };
     
     const clefs = [
-      { name: 'treble', symbol: '𝄞', notes: trebleNotes, positions: treblePositions, displayNotes: ['C4', 'D', 'E', 'F', 'G', 'A', 'B', 'C5'] },
-      { name: 'bass', symbol: '𝄢', notes: bassNotes, positions: bassPositions, displayNotes: ['C3', 'D', 'E', 'F', 'G', 'A', 'B', 'C'] }
+      { name: 'treble', symbol: '𝄞', notes: trebleNotes, positions: treblePositions, displayNotes: ['C4', 'D', 'E', 'F', 'G', 'A', 'B', 'C5'], acronyms: trebleAcronyms },
+      { name: 'bass', symbol: '𝄢', notes: bassNotes, positions: bassPositions, displayNotes: ['C3', 'D', 'E', 'F', 'G', 'A', 'B', 'C'], acronyms: bassAcronyms }
     ];
 
     let currentClef = null;
@@ -260,7 +369,7 @@
     }
 
     // Create SVG staff with notes
-    function createStaff(containerId, notes, positions, clefSymbol, showLabels = false) {
+    function createStaff(containerId, notes, positions, clefSymbol, showLabels = false, acronyms = {}) {
       const container = document.getElementById(containerId);
       
       const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -326,6 +435,16 @@
           label.textContent = note;
           svg.appendChild(label);
 
+          // Acronym label beside the note
+          if (acronyms[note]) {
+            const acronymText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            acronymText.setAttribute('x', x + 25);
+            acronymText.setAttribute('y', y + 3);
+            acronymText.setAttribute('class', 'acronym-label');
+            acronymText.textContent = acronyms[note];
+            svg.appendChild(acronymText);
+          }
+
           // Middle C marker
           if (note === 'C4' || note === 'C3') {
             const marker = document.createElementNS('http://www.w3.org/2000/svg', 'text');
@@ -342,6 +461,66 @@
 
       container.innerHTML = '';
       container.appendChild(svg);
+    }
+
+    // Create piano visualization
+    function createPiano() {
+      const container = document.getElementById('piano-container');
+      const pianoDiv = document.createElement('div');
+      pianoDiv.className = 'piano-keys';
+
+      // White keys: C, D, E, F, G, A, B
+      const whiteNotes = ['C4', 'D', 'E', 'F', 'G', 'A', 'B', 'C5'];
+      
+      whiteNotes.forEach(note => {
+        const key = document.createElement('div');
+        key.className = 'white-key';
+        key.setAttribute('data-note', note);
+        
+        const label = document.createElement('div');
+        label.className = 'key-label';
+        label.textContent = note;
+        key.appendChild(label);
+        
+        key.addEventListener('click', () => {
+          playNote(note);
+          key.classList.add('active');
+          setTimeout(() => key.classList.remove('active'), 200);
+        });
+        
+        pianoDiv.appendChild(key);
+
+        // Add black keys after C, D, E, F, G, A (not after B or final C)
+        if (note !== 'B' && note !== 'C5') {
+          const blackKey = document.createElement('div');
+          blackKey.className = 'black-key';
+          let blackNoteName = note;
+          if (note === 'C4') blackNoteName = 'C#/Db';
+          else if (note === 'D') blackNoteName = 'D#/Eb';
+          else if (note === 'E') blackNoteName = 'F#/Gb';
+          else if (note === 'F') blackNoteName = 'F#/Gb';
+          else if (note === 'G') blackNoteName = 'G#/Ab';
+          else if (note === 'A') blackNoteName = 'A#/Bb';
+          
+          blackKey.setAttribute('data-note', blackNoteName);
+          
+          const blackLabel = document.createElement('div');
+          blackLabel.className = 'key-label';
+          blackLabel.textContent = blackNoteName;
+          blackKey.appendChild(blackLabel);
+          
+          blackKey.addEventListener('click', (e) => {
+            e.stopPropagation();
+            blackKey.classList.add('active');
+            setTimeout(() => blackKey.classList.remove('active'), 200);
+          });
+          
+          pianoDiv.appendChild(blackKey);
+        }
+      });
+
+      container.innerHTML = '';
+      container.appendChild(pianoDiv);
     }
 
     function createNote(noteName, positions) {
@@ -395,8 +574,9 @@
       document.getElementById('btn-practice').classList.add('bg-slate-100', 'text-slate-700');
       document.getElementById('btn-practice').classList.remove('bg-indigo-600', 'text-white');
       
-      createStaff('treble-staff-container', trebleNotes, treblePositions, '𝄞', true);
-      createStaff('bass-staff-container', bassNotes, bassPositions, '𝄢', true);
+      createStaff('treble-staff-container', trebleNotes, treblePositions, '𝄞', true, trebleAcronyms);
+      createStaff('bass-staff-container', bassNotes, bassPositions, '𝄢', true, bassAcronyms);
+      createPiano();
     }
 
     function showPractice() {
