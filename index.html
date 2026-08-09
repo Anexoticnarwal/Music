@@ -159,15 +159,8 @@
 
           <div class="feedback" id="feedback"></div>
 
-          <div class="grid grid-cols-4 gap-2">
-            <button class="btn-note note-option" data-note="C4">C4</button>
-            <button class="btn-note note-option" data-note="D">D</button>
-            <button class="btn-note note-option" data-note="E">E</button>
-            <button class="btn-note note-option" data-note="F">F</button>
-            <button class="btn-note note-option" data-note="G">G</button>
-            <button class="btn-note note-option" data-note="A">A</button>
-            <button class="btn-note note-option" data-note="B">B</button>
-            <button class="btn-note note-option" data-note="C5">C5</button>
+          <div id="practice-buttons" class="grid grid-cols-4 gap-2">
+            <!-- Buttons will be dynamically generated -->
           </div>
         </section>
       </div>
@@ -191,7 +184,6 @@
     // Lines at: 40, 70, 100, 130, 160
     // Spaces at: 55, 85, 115, 145
     // Above line 1: 25
-    // Below line 5: 175
     const treblePositions = {
       'C5': 25,     // Above staff
       'B': 40,      // Line 1 (top)
@@ -216,9 +208,10 @@
 
     const trebleNotes = ['C4', 'D', 'E', 'F', 'G', 'A', 'B', 'C5'];
     const bassNotes = ['C3', 'D', 'E', 'F', 'G', 'A', 'B', 'C'];
+    
     const clefs = [
-      { name: 'treble', symbol: '𝄞', notes: trebleNotes, positions: treblePositions },
-      { name: 'bass', symbol: '𝄢', notes: bassNotes, positions: bassPositions }
+      { name: 'treble', symbol: '𝄞', notes: trebleNotes, positions: treblePositions, displayNotes: ['C4', 'D', 'E', 'F', 'G', 'A', 'B', 'C5'] },
+      { name: 'bass', symbol: '𝄢', notes: bassNotes, positions: bassPositions, displayNotes: ['C3', 'D', 'E', 'F', 'G', 'A', 'B', 'C'] }
     ];
 
     let currentClef = null;
@@ -378,6 +371,22 @@
       group.appendChild(stem);
     }
 
+    function createPracticeButtons(displayNotes) {
+      const container = document.getElementById('practice-buttons');
+      container.innerHTML = '';
+      
+      displayNotes.forEach(note => {
+        const button = document.createElement('button');
+        button.className = 'btn-note note-option';
+        button.setAttribute('data-note', note);
+        button.textContent = note;
+        button.addEventListener('click', () => {
+          checkAnswer(note);
+        });
+        container.appendChild(button);
+      });
+    }
+
     function showLearn() {
       document.getElementById('learn-view').classList.remove('hidden');
       document.getElementById('practice-view').classList.add('hidden');
@@ -415,11 +424,10 @@
       document.getElementById('clef-name').textContent = currentClef.name.charAt(0).toUpperCase() + currentClef.name.slice(1) + ' Clef';
       
       createNote(currentNote, currentClef.positions);
+      createPracticeButtons(currentClef.displayNotes);
+      
       document.getElementById('feedback').textContent = '';
       document.getElementById('feedback').className = 'feedback';
-      document.querySelectorAll('.note-option').forEach(btn => {
-        btn.classList.remove('active');
-      });
       
       setTimeout(() => playNote(currentNote), 300);
     }
@@ -456,13 +464,6 @@
       if (currentNote) {
         playNote(currentNote);
       }
-    });
-
-    document.querySelectorAll('.note-option').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const selected = btn.dataset.note;
-        checkAnswer(selected);
-      });
     });
 
     showLearn();
