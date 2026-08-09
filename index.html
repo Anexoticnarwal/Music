@@ -20,7 +20,7 @@
     .staff-svg {
       width: 100%;
       height: auto;
-      min-height: 150px;
+      min-height: 200px;
       display: block;
     }
     .piano-container {
@@ -131,11 +131,15 @@
       margin-bottom: 20px;
       gap: 10px;
     }
-    .acronym-label {
-      font-size: 9px;
+    .mnemonic-initial {
+      font-size: 13px;
+      font-weight: 900;
       fill: #7c3aed;
-      font-weight: bold;
-      font-style: italic;
+    }
+    .mnemonic-text {
+      font-size: 11px;
+      fill: #6b7280;
+      font-weight: 600;
     }
     @media (max-width: 640px) {
       .practice-header { flex-direction: column; align-items: flex-start; }
@@ -147,6 +151,12 @@
       .black-key {
         width: 26px;
         height: 100px;
+      }
+      .mnemonic-initial {
+        font-size: 11px;
+      }
+      .mnemonic-text {
+        font-size: 9px;
       }
     }
   </style>
@@ -171,18 +181,6 @@
             <h2 class="text-lg font-bold text-slate-900 mb-4">Treble Clef - Full Scale</h2>
             <p class="text-sm text-slate-600 mb-3">Middle C and one octave</p>
             <div class="staff-container" id="treble-staff-container"></div>
-            <div class="grid grid-cols-2 gap-4 mt-4">
-              <div class="p-4 bg-indigo-50 rounded-lg border-l-4 border-indigo-600">
-                <div class="text-xs font-semibold text-indigo-700 mb-2">LINES</div>
-                <div class="text-2xl font-bold text-indigo-900 tracking-widest mb-2">E G B D F</div>
-                <div class="text-sm text-indigo-600 font-semibold italic">"Every Good Boy Does Fine"</div>
-              </div>
-              <div class="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-600">
-                <div class="text-xs font-semibold text-blue-700 mb-2">SPACES</div>
-                <div class="text-2xl font-bold text-blue-900 tracking-widest mb-2">F A C E</div>
-                <div class="text-sm text-blue-600 font-semibold italic">"FACE"</div>
-              </div>
-            </div>
           </div>
 
           <!-- Bass Clef -->
@@ -190,18 +188,6 @@
             <h2 class="text-lg font-bold text-slate-900 mb-4">Bass Clef - Full Scale</h2>
             <p class="text-sm text-slate-600 mb-3">Middle C and one octave</p>
             <div class="staff-container" id="bass-staff-container"></div>
-            <div class="grid grid-cols-2 gap-4 mt-4">
-              <div class="p-4 bg-purple-50 rounded-lg border-l-4 border-purple-600">
-                <div class="text-xs font-semibold text-purple-700 mb-2">LINES</div>
-                <div class="text-2xl font-bold text-purple-900 tracking-widest mb-2">G B D F A</div>
-                <div class="text-sm text-purple-600 font-semibold italic">"Good Boys Do Fine Always"</div>
-              </div>
-              <div class="p-4 bg-pink-50 rounded-lg border-l-4 border-pink-600">
-                <div class="text-xs font-semibold text-pink-700 mb-2">SPACES</div>
-                <div class="text-2xl font-bold text-pink-900 tracking-widest mb-2">A C E G</div>
-                <div class="text-sm text-pink-600 font-semibold italic">"All Cows Eat Grass"</div>
-              </div>
-            </div>
           </div>
 
           <!-- Piano -->
@@ -295,32 +281,32 @@
     const trebleNotes = ['C4', 'D', 'E', 'F', 'G', 'A', 'B', 'C5'];
     const bassNotes = ['C3', 'D', 'E', 'F', 'G', 'A', 'B', 'C'];
 
-    // Acronym mappings for treble and bass clefs
-    const trebleAcronyms = {
-      'B': 'Every',
-      'G': 'Good',
-      'D': 'Does',
-      'F': 'Fine',
-      'E': 'Boy',
-      'A': 'FACE',
-      'C4': 'MC',
-      'C5': 'MC'
+    // Mnemonic data for treble and bass clefs
+    const trebleMnemonics = {
+      'B': { word: 'Every', line: true },
+      'G': { word: 'Good', line: true },
+      'D': { word: 'Does', line: false },
+      'F': { word: 'Fine', line: false },
+      'E': { word: 'Boy', line: true },
+      'A': { word: 'FACE', line: false },
+      'C4': { word: 'MC', line: true },
+      'C5': { word: 'MC', line: false }
     };
 
-    const bassAcronyms = {
-      'B': 'Good',
-      'G': 'Boys',
-      'D': 'Fine',
-      'F': 'Always',
-      'E': 'Do',
-      'A': 'All',
-      'C': 'Cows/Eat',
-      'C3': 'MC'
+    const bassMnemonics = {
+      'B': { word: 'Good', line: true },
+      'G': { word: 'Boys', line: true },
+      'D': { word: 'Do', line: false },
+      'F': { word: 'Always', line: false },
+      'E': { word: 'Fine', line: true },
+      'A': { word: 'All', line: false },
+      'C': { word: 'Cows', line: false },
+      'C3': { word: 'MC', line: true }
     };
     
     const clefs = [
-      { name: 'treble', symbol: '𝄞', notes: trebleNotes, positions: treblePositions, displayNotes: ['C4', 'D', 'E', 'F', 'G', 'A', 'B', 'C5'], acronyms: trebleAcronyms },
-      { name: 'bass', symbol: '𝄢', notes: bassNotes, positions: bassPositions, displayNotes: ['C3', 'D', 'E', 'F', 'G', 'A', 'B', 'C'], acronyms: bassAcronyms }
+      { name: 'treble', symbol: '𝄞', notes: trebleNotes, positions: treblePositions, displayNotes: ['C4', 'D', 'E', 'F', 'G', 'A', 'B', 'C5'], mnemonics: trebleMnemonics },
+      { name: 'bass', symbol: '𝄢', notes: bassNotes, positions: bassPositions, displayNotes: ['C3', 'D', 'E', 'F', 'G', 'A', 'B', 'C'], mnemonics: bassMnemonics }
     ];
 
     let currentClef = null;
@@ -368,22 +354,22 @@
       }
     }
 
-    // Create SVG staff with notes
-    function createStaff(containerId, notes, positions, clefSymbol, showLabels = false, acronyms = {}) {
+    // Create SVG staff with notes and mnemonics
+    function createStaff(containerId, notes, positions, clefSymbol, mnemonics) {
       const container = document.getElementById(containerId);
       
       const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
       svg.setAttribute('class', 'staff-svg');
-      svg.setAttribute('viewBox', '0 0 800 200');
+      svg.setAttribute('viewBox', '0 0 900 250');
       svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 
       // Staff lines
       for (let i = 0; i < 5; i++) {
-        const y = 40 + i * 30;
+        const y = 50 + i * 30;
         const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
         line.setAttribute('x1', '50');
         line.setAttribute('y1', y);
-        line.setAttribute('x2', '750');
+        line.setAttribute('x2', '850');
         line.setAttribute('y2', y);
         line.setAttribute('stroke', '#ccc');
         line.setAttribute('stroke-width', '2');
@@ -393,16 +379,16 @@
       // Clef
       const clefText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
       clefText.setAttribute('x', '20');
-      clefText.setAttribute('y', '110');
+      clefText.setAttribute('y', '125');
       clefText.setAttribute('font-size', '80');
       clefText.setAttribute('fill', '#9ca3af');
       clefText.textContent = clefSymbol;
       svg.appendChild(clefText);
 
-      // Notes
+      // Notes with mnemonics
       notes.forEach((note, idx) => {
         const y = positions[note];
-        const x = 130 + idx * 70;
+        const x = 150 + idx * 80;
         
         // Note head
         const circle = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
@@ -423,39 +409,46 @@
         stem.setAttribute('stroke-width', '2');
         svg.appendChild(stem);
 
-        // Label
-        if (showLabels) {
+        // Display mnemonic
+        const mnemonic = mnemonics[note];
+        if (mnemonic) {
+          const word = mnemonic.word;
+          const initial = word[0];
+          const rest = word.substring(1);
+
+          // Position mnemonics below or above the staff
+          const mnemonicY = y > 100 ? y + 50 : y - 45;
+
+          // Initial (emphasized)
+          const initialText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          initialText.setAttribute('x', x - 8);
+          initialText.setAttribute('y', mnemonicY);
+          initialText.setAttribute('class', 'mnemonic-initial');
+          initialText.setAttribute('text-anchor', 'end');
+          initialText.textContent = initial;
+          svg.appendChild(initialText);
+
+          // Rest of word
+          if (rest) {
+            const restText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            restText.setAttribute('x', x + 2);
+            restText.setAttribute('y', mnemonicY);
+            restText.setAttribute('class', 'mnemonic-text');
+            restText.setAttribute('text-anchor', 'start');
+            restText.textContent = rest;
+            svg.appendChild(restText);
+          }
+
+          // Note label above stem
           const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
           label.setAttribute('x', x);
-          label.setAttribute('y', y + 35);
+          label.setAttribute('y', y - 45);
           label.setAttribute('text-anchor', 'middle');
           label.setAttribute('font-size', '12');
-          label.setAttribute('fill', '#666');
+          label.setAttribute('fill', '#9ca3af');
           label.setAttribute('font-weight', 'bold');
           label.textContent = note;
           svg.appendChild(label);
-
-          // Acronym label beside the note
-          if (acronyms[note]) {
-            const acronymText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-            acronymText.setAttribute('x', x + 25);
-            acronymText.setAttribute('y', y + 3);
-            acronymText.setAttribute('class', 'acronym-label');
-            acronymText.textContent = acronyms[note];
-            svg.appendChild(acronymText);
-          }
-
-          // Middle C marker
-          if (note === 'C4' || note === 'C3') {
-            const marker = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-            marker.setAttribute('x', x - 20);
-            marker.setAttribute('y', y + 5);
-            marker.setAttribute('font-size', '10');
-            marker.setAttribute('fill', '#ef4444');
-            marker.setAttribute('font-weight', 'bold');
-            marker.textContent = 'MC';
-            svg.appendChild(marker);
-          }
         }
       });
 
@@ -574,8 +567,8 @@
       document.getElementById('btn-practice').classList.add('bg-slate-100', 'text-slate-700');
       document.getElementById('btn-practice').classList.remove('bg-indigo-600', 'text-white');
       
-      createStaff('treble-staff-container', trebleNotes, treblePositions, '𝄞', true, trebleAcronyms);
-      createStaff('bass-staff-container', bassNotes, bassPositions, '𝄢', true, bassAcronyms);
+      createStaff('treble-staff-container', trebleNotes, treblePositions, '𝄞', trebleMnemonics);
+      createStaff('bass-staff-container', bassNotes, bassPositions, '𝄢', bassMnemonics);
       createPiano();
     }
 
