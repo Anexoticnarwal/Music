@@ -133,15 +133,19 @@
       margin-bottom: 20px;
       gap: 10px;
     }
-    .note-label {
-      font-size: 14px;
-      fill: #4b5563;
+    .note-letter {
+      font-size: 11px;
+      fill: #ffffff;
       font-weight: bold;
+      font-family: sans-serif;
+      pointer-events: none;
     }
     .mnemonic-text {
-      font-size: 13px;
-      fill: #7c3aed;
+      font-size: 12px;
+      fill: #4f46e5;
       font-weight: 600;
+      font-family: sans-serif;
+      pointer-events: none;
     }
     @media (max-width: 640px) {
       .practice-header { flex-direction: column; align-items: flex-start; }
@@ -177,7 +181,6 @@
             <h2 class="text-lg font-bold text-slate-900 mb-2">Grand Staff - Full Overview</h2>
             <p class="text-sm text-slate-600 mb-4">Complete scale from Middle C (C4) showing how notes appear on both treble and bass clefs</p>
             <div class="staff-container">
-              <!-- ADDED PROPER SVG TAG HERE -->
               <svg id="grand-staff-svg" class="staff-svg" viewBox="0 0 1000 450" preserveAspectRatio="xMidYMid meet"></svg>
             </div>
           </div>
@@ -236,34 +239,19 @@
     const BASS_START_Y = 260;  // Top line of Bass Staff (A3)
     const STEP_SIZE = 15;
 
-    // Steps from the top line of the respective staff (0 = top line, 1 = top space, etc.)
+    // Steps from the top line of the respective staff
     const trebleSteps = {
-      'C5': 3,
-      'B4': 4,
-      'A4': 5,
-      'G4': 6,
-      'F4': 7,
-      'E4': 8,
-      'D4': 9,
-      'C4': 10
+      'C5': 3, 'B4': 4, 'A4': 5, 'G4': 6, 'F4': 7, 'E4': 8, 'D4': 9, 'C4': 10
     };
 
     const bassSteps = {
-      'C4': -2,
-      'B3': -1,
-      'A3': 0,
-      'G3': 1,
-      'F3': 2,
-      'E3': 3,
-      'D3': 4,
-      'C3': 5
+      'C4': -2, 'B3': -1, 'A3': 0, 'G3': 1, 'F3': 2, 'E3': 3, 'D3': 4, 'C3': 5
     };
 
     const trebleNotes = ['C4','D4','E4','F4','G4','A4','B4','C5'];
     const bassNotes = ['C3','D3','E3','F3','G3','A3','B3','C4'];
     const allNotes = ['C3','D3','E3','F3','G3','A3','B3','C4','D4','E4','F4','G4','A4','B4','C5'];
 
-    // Updated clear mnemonics focused under notes
     const trebleMnemonics = {
       'C4': 'Middle', 'D4': '', 'E4': 'Every', 'F4': 'F (Face)', 'G4': 'Good', 'A4': 'A', 'B4': 'Boy', 'C5': 'C'
     };
@@ -279,11 +267,11 @@
     let audioContext = null;
 
     const noteFrequencies = {
-      'C3': 130.81, 'C#4': 277.18, 'Db4': 277.18, 'D3': 146.83, 'D4': 293.66,
-      'D#4': 311.13, 'Eb4': 311.13, 'E3': 164.81, 'E4': 329.63, 'F3': 174.61,
-      'F4': 349.23, 'F#4': 369.99, 'Gb4': 369.99, 'G3': 196.00, 'G4': 392.00,
-      'G#4': 415.30, 'Ab4': 415.30, 'A3': 220.00, 'A4': 440.00, 'A#4': 466.16,
-      'Bb4': 466.16, 'B3': 246.94, 'B4': 493.88, 'C4': 261.63, 'C5': 523.25
+      'C3': 130.81, 'C#3': 138.59, 'D3': 146.83, 'D#3': 155.56, 'E3': 164.81,
+      'F3': 174.61, 'F#3': 185.00, 'G3': 196.00, 'G#3': 207.65, 'A3': 220.00,
+      'A#3': 233.08, 'B3': 246.94, 'C4': 261.63, 'C#4': 277.18, 'D4': 293.66,
+      'D#4': 311.13, 'E4': 329.63, 'F4': 349.23, 'F#4': 369.99, 'G4': 392.00,
+      'G#4': 415.30, 'A4': 440.00, 'A#4': 466.16, 'B4': 493.88, 'C5': 523.25
     };
 
     function ensureAudioContext() {
@@ -315,41 +303,34 @@
       }
     }
 
-    // Helper SVG generators
     function createSVGElement(tag, attrs) {
       const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
       for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
       return el;
     }
 
-    // Main Renderer for the Grand Staff
     function renderGrandStaff(svgId, options = {}) {
       const { highlightNote = null, highlightClef = null, withLabels = false } = options;
       const svg = document.getElementById(svgId);
-      if (!svg) return; // safety check
+      if (!svg) return;
       svg.innerHTML = '';
       
-      // Draw Staff Lines
       for (let i = 0; i < 5; i++) {
-        // Treble
         svg.appendChild(createSVGElement('line', {
           x1: '80', y1: TREBLE_START_Y + i * 30, x2: VIEWBOX_WIDTH - 20, y2: TREBLE_START_Y + i * 30,
           stroke: '#cbd5e1', 'stroke-width': '2'
         }));
-        // Bass
         svg.appendChild(createSVGElement('line', {
           x1: '80', y1: BASS_START_Y + i * 30, x2: VIEWBOX_WIDTH - 20, y2: BASS_START_Y + i * 30,
           stroke: '#cbd5e1', 'stroke-width': '2'
         }));
       }
 
-      // Draw Connective Brace (left line)
       svg.appendChild(createSVGElement('line', {
         x1: '70', y1: TREBLE_START_Y, x2: '70', y2: BASS_START_Y + 120,
         stroke: '#475569', 'stroke-width': '3'
       }));
 
-      // Draw Clefs
       const trebleClef = createSVGElement('text', { x: '25', y: TREBLE_START_Y + 105, 'font-size': '110', fill: '#64748b' });
       trebleClef.textContent = '𝄞';
       svg.appendChild(trebleClef);
@@ -358,7 +339,6 @@
       bassClef.textContent = '𝄢';
       svg.appendChild(bassClef);
 
-      // Note Drawing Function
       const drawNote = (noteName, clef, xIndex) => {
         const isTreble = clef === 'Treble';
         const startY = isTreble ? TREBLE_START_Y : BASS_START_Y;
@@ -366,13 +346,13 @@
         if (step === undefined) return;
 
         const y = startY + step * STEP_SIZE;
-        const x = 160 + xIndex * 100; // Evenly space notes horizontally
+        const x = 160 + xIndex * 100;
 
         // Ledger Lines
         if (step >= 10) {
           for (let s = 10; s <= step; s += 2) {
             svg.appendChild(createSVGElement('line', {
-              x1: x - 22, y1: startY + s * STEP_SIZE, x2: x + 22, y2: startY + s * STEP_SIZE,
+              x1: x - 26, y1: startY + s * STEP_SIZE, x2: x + 26, y2: startY + s * STEP_SIZE,
               stroke: '#1f2937', 'stroke-width': '2'
             }));
           }
@@ -380,36 +360,48 @@
         if (step <= -2) {
           for (let s = -2; s >= step; s -= 2) {
             svg.appendChild(createSVGElement('line', {
-              x1: x - 22, y1: startY + s * STEP_SIZE, x2: x + 22, y2: startY + s * STEP_SIZE,
+              x1: x - 26, y1: startY + s * STEP_SIZE, x2: x + 26, y2: startY + s * STEP_SIZE,
               stroke: '#1f2937', 'stroke-width': '2'
             }));
           }
         }
 
         // Note Head
-        svg.appendChild(createSVGElement('ellipse', { cx: x, cy: y, rx: '14', ry: '11', fill: '#1f2937' }));
+        svg.appendChild(createSVGElement('ellipse', { cx: x, cy: y, rx: '17', ry: '12', fill: '#1f2937' }));
 
         // Stem Direction
         if (step > 4) {
           svg.appendChild(createSVGElement('line', {
-            x1: x + 12, y1: y, x2: x + 12, y2: y - 45, stroke: '#1f2937', 'stroke-width': '2'
+            x1: x + 15, y1: y, x2: x + 15, y2: y - 45, stroke: '#1f2937', 'stroke-width': '2'
           }));
         } else {
           svg.appendChild(createSVGElement('line', {
-            x1: x - 12, y1: y, x2: x - 12, y2: y + 45, stroke: '#1f2937', 'stroke-width': '2'
+            x1: x - 15, y1: y, x2: x - 15, y2: y + 45, stroke: '#1f2937', 'stroke-width': '2'
           }));
         }
 
-        // Render Labels & Mnemonics for Learn Mode
         if (withLabels) {
-          const labelY = isTreble ? TREBLE_START_Y + 160 : BASS_START_Y + 160;
-          const noteLabel = createSVGElement('text', { x: x, y: labelY, 'text-anchor': 'middle', class: 'note-label' });
+          // Inner Note Letter
+          const noteLabel = createSVGElement('text', { 
+            x: x, 
+            y: y, 
+            'text-anchor': 'middle', 
+            'dominant-baseline': 'central',
+            class: 'note-letter'
+          });
           noteLabel.textContent = noteName;
           svg.appendChild(noteLabel);
 
+          // Side Mnemonic text
           const mnemObj = isTreble ? trebleMnemonics[noteName] : bassMnemonics[noteName];
           if (mnemObj) {
-            const mnemText = createSVGElement('text', { x: x, y: labelY + 25, 'text-anchor': 'middle', class: 'mnemonic-text' });
+            const mnemText = createSVGElement('text', { 
+              x: x + 26, 
+              y: y, 
+              'text-anchor': 'start', 
+              'dominant-baseline': 'central',
+              class: 'mnemonic-text'
+            });
             mnemText.textContent = mnemObj;
             svg.appendChild(mnemText);
           }
@@ -499,7 +491,7 @@
       document.getElementById('btn-practice').classList.add('bg-slate-100', 'text-slate-700');
       document.getElementById('btn-practice').classList.remove('bg-indigo-600', 'text-white');
       
-      renderGrandStaff('grand-staff-svg', { withLabels: true }); // UPDATED TO TARGET SVG
+      renderGrandStaff('grand-staff-svg', { withLabels: true });
       createPiano();
     }
 
