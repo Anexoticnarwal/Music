@@ -176,7 +176,10 @@
           <div>
             <h2 class="text-lg font-bold text-slate-900 mb-2">Grand Staff - Full Overview</h2>
             <p class="text-sm text-slate-600 mb-4">Complete scale from Middle C (C4) showing how notes appear on both treble and bass clefs</p>
-            <div class="staff-container" id="grand-staff-container"></div>
+            <div class="staff-container">
+              <!-- ADDED PROPER SVG TAG HERE -->
+              <svg id="grand-staff-svg" class="staff-svg" viewBox="0 0 1000 450" preserveAspectRatio="xMidYMid meet"></svg>
+            </div>
           </div>
           <div>
             <h2 class="text-lg font-bold text-slate-900 mb-2">Piano Keyboard</h2>
@@ -227,8 +230,6 @@
   </div>
 
   <script>
-    // Improved exact mapping to sheet music spacing
-    // STEP_SIZE is half the distance between two lines.
     const VIEWBOX_WIDTH = 1000;
     const VIEWBOX_HEIGHT = 450;
     const TREBLE_START_Y = 60; // Top line of Treble Staff (F5)
@@ -321,10 +322,11 @@
       return el;
     }
 
-    // Main Renderer for the Grand Staff (Handles both Learn and Practice)
+    // Main Renderer for the Grand Staff
     function renderGrandStaff(svgId, options = {}) {
       const { highlightNote = null, highlightClef = null, withLabels = false } = options;
       const svg = document.getElementById(svgId);
+      if (!svg) return; // safety check
       svg.innerHTML = '';
       
       // Draw Staff Lines
@@ -387,8 +389,7 @@
         // Note Head
         svg.appendChild(createSVGElement('ellipse', { cx: x, cy: y, rx: '14', ry: '11', fill: '#1f2937' }));
 
-        // Stem Direction (Standard Notation: notes above middle line go down, below go up)
-        // Middle line is step 4. Step > 4 (lower on staff) means stem goes UP.
+        // Stem Direction
         if (step > 4) {
           svg.appendChild(createSVGElement('line', {
             x1: x + 12, y1: y, x2: x + 12, y2: y - 45, stroke: '#1f2937', 'stroke-width': '2'
@@ -401,13 +402,11 @@
 
         // Render Labels & Mnemonics for Learn Mode
         if (withLabels) {
-          // Note Label right below the staff row
           const labelY = isTreble ? TREBLE_START_Y + 160 : BASS_START_Y + 160;
           const noteLabel = createSVGElement('text', { x: x, y: labelY, 'text-anchor': 'middle', class: 'note-label' });
           noteLabel.textContent = noteName;
           svg.appendChild(noteLabel);
 
-          // Acronym Mnemonic below the note label
           const mnemObj = isTreble ? trebleMnemonics[noteName] : bassMnemonics[noteName];
           if (mnemObj) {
             const mnemText = createSVGElement('text', { x: x, y: labelY + 25, 'text-anchor': 'middle', class: 'mnemonic-text' });
@@ -418,16 +417,13 @@
       };
 
       if (withLabels) {
-        // Draw all notes for Learn Overview
         trebleNotes.forEach((n, idx) => drawNote(n, 'Treble', idx));
         bassNotes.forEach((n, idx) => drawNote(n, 'Bass', idx));
       } else if (highlightNote && highlightClef) {
-        // Draw single note centered for Practice Mode
         drawNote(highlightNote, highlightClef, 3.5); 
       }
     }
 
-    // Create piano visualization
     function createPiano() {
       const container = document.getElementById('piano-container');
       const pianoDiv = document.createElement('div');
@@ -503,7 +499,7 @@
       document.getElementById('btn-practice').classList.add('bg-slate-100', 'text-slate-700');
       document.getElementById('btn-practice').classList.remove('bg-indigo-600', 'text-white');
       
-      renderGrandStaff('grand-staff-container', { withLabels: true });
+      renderGrandStaff('grand-staff-svg', { withLabels: true }); // UPDATED TO TARGET SVG
       createPiano();
     }
 
@@ -524,7 +520,6 @@
 
     function nextQuestion() {
       isAnswering = false;
-      // Randomly pick a clef to draw from
       const clefName = Math.random() > 0.5 ? 'Treble' : 'Bass';
       const notesArray = clefName === 'Treble' ? trebleNotes : bassNotes;
       currentNote = notesArray[Math.floor(Math.random() * notesArray.length)];
@@ -534,7 +529,6 @@
       document.getElementById('feedback').textContent = '';
       document.getElementById('feedback').className = 'feedback';
       
-      // Reset button states
       document.querySelectorAll('.btn-note').forEach(btn => btn.classList.remove('active'));
       
       setTimeout(() => playNote(currentNote), 300);
