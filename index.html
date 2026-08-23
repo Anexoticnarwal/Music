@@ -295,7 +295,7 @@
   <script>
     const VIEWBOX_WIDTH = 1020;
     const TREBLE_START_Y = 80;  
-    const STEP_SIZE = 14;       
+    const STEP_SIZE = 14;        
 
     // Standard Grand Staff scale notes G2 to F5
     const allScaleNotes = [
@@ -308,7 +308,7 @@
       'B2': 18, 'A2': 19, 'G2': 20
     };
 
-    // Cleaned-up mnemonics with non-duplicated column headings & face descriptions added
+    // Cleaned-up mnemonics without bracketed letters
     const allMnemonics = {
       // Treble Lines -> Col 0 (Every Good Boy Does Fine)
       'E4': { col: 0, word: 'Every', color: '#0284c7' },
@@ -317,11 +317,11 @@
       'D5': { col: 0, word: 'Does', color: '#0284c7' },
       'F5': { col: 0, word: 'Fine', color: '#0284c7' },
 
-      // Treble Spaces -> Col 1 (F-A-C-E with descriptive reminder text)
-      'F4': { col: 1, word: 'First (F)', color: '#059669' },
-      'A4': { col: 1, word: 'Above (A)', color: '#059669' },
-      'C5': { col: 1, word: 'Center (C)', color: '#059669' },
-      'E5': { col: 1, word: 'Edge (E)', color: '#059669' },
+      // Treble Spaces -> Col 1 (FACE)
+      'F4': { col: 1, word: 'First', color: '#059669' },
+      'A4': { col: 1, word: 'Above', color: '#059669' },
+      'C5': { col: 1, word: 'Center', color: '#059669' },
+      'E5': { col: 1, word: 'Edge', color: '#059669' },
 
       // Bass Lines -> Col 2 (Good Boys Do Fine Always)
       'G2': { col: 2, word: 'Good', color: '#7c3aed' },
@@ -424,11 +424,12 @@
       trebleClef.textContent = '𝄞';
       svg.appendChild(trebleClef);
 
-      const bassClef = createSVGElement('text', { x: '22', y: TREBLE_START_Y + 232, 'font-size': '92', fill: '#64748b' });
+      // Repositioned Bass Clef (centered nicely on the lower 5 staff lines)
+      const bassClef = createSVGElement('text', { x: '24', y: TREBLE_START_Y + 219, 'font-size': '78', fill: '#64748b' });
       bassClef.textContent = '𝄢';
       svg.appendChild(bassClef);
 
-      // Render Tightly Packed Column Headers for Learn Mode (without repeated acronym names)
+      // Render Tightly Packed Column Headers for Learn Mode
       if (withLabels) {
         const colXPositions = [590, 695, 800, 905];
         const headers = ['Treble Lines', 'Treble Spaces', 'Bass Lines', 'Bass Spaces'];
