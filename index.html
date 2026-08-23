@@ -20,7 +20,7 @@
     }
     .staff-svg {
       width: 100%;
-      min-width: 1100px;
+      min-width: 1250px;
       height: auto;
       display: block;
     }
@@ -138,10 +138,16 @@
     }
     .mnemonic-text {
       font-size: 12px;
-      fill: #4f46e5;
       font-weight: 700;
       font-family: sans-serif;
       pointer-events: none;
+    }
+    .col-header {
+      font-size: 10px;
+      font-weight: 800;
+      fill: #64748b;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
     }
     @media (max-width: 640px) {
       .practice-header { flex-direction: column; align-items: flex-start; }
@@ -157,7 +163,7 @@
     <header class="bg-white border-b border-slate-200 px-4 py-6 sticky top-0 z-20">
       <div class="max-w-6xl mx-auto">
         <h1 class="text-2xl font-bold text-slate-900">Piano Theory Pro</h1>
-        <p class="text-sm text-slate-600 mt-1">Standard Grand Staff Notes & Memory Acronyms</p>
+        <p class="text-sm text-slate-600 mt-1">Standard Grand Staff Notes & Column-Organized Acronyms</p>
       </div>
     </header>
 
@@ -168,9 +174,9 @@
         <section id="learn-view" class="space-y-8">
           <div>
             <h2 class="text-lg font-bold text-slate-900 mb-2">Grand Staff Notes</h2>
-            <p class="text-sm text-slate-600 mb-4">Standard scale from Bass bottom line (G2) to Treble top line (F5), with acronyms separated on the right.</p>
+            <p class="text-sm text-slate-600 mb-4">Sequential scale with memory acronyms grouped into 4 distinct indented columns on the right.</p>
             <div class="staff-container">
-              <svg id="grand-staff-svg" class="staff-svg" viewBox="0 0 1300 450" preserveAspectRatio="xMidYMid meet"></svg>
+              <svg id="grand-staff-svg" class="staff-svg" viewBox="0 0 1450 450" preserveAspectRatio="xMidYMid meet"></svg>
             </div>
           </div>
           <div>
@@ -191,7 +197,7 @@
           </div>
 
           <div class="staff-container">
-            <svg id="practice-staff" class="staff-svg" viewBox="0 0 1300 450" preserveAspectRatio="xMidYMid meet"></svg>
+            <svg id="practice-staff" class="staff-svg" viewBox="0 0 1450 450" preserveAspectRatio="xMidYMid meet"></svg>
           </div>
 
           <button id="btn-play-sound" class="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 active:bg-blue-800 transition min-h-12">
@@ -219,13 +225,12 @@
   </div>
 
   <script>
-    const VIEWBOX_WIDTH = 1300;
+    const VIEWBOX_WIDTH = 1450;
     const VIEWBOX_HEIGHT = 450;
     const TREBLE_START_Y = 80;  // F5 top treble line position
     const STEP_SIZE = 14;       // Vertical distance per step
 
-    // Standard Grand Staff diatonic scale from G2 (Bass bottom line) to F5 (Treble top line)
-    // Each note exists exactly ONCE in this list (no duplicate labels)
+    // Standard Grand Staff diatonic scale from G2 to F5
     const allScaleNotes = [
       'G2','A2','B2','C3','D3','E3','F3','G3','A3','B3','C4','D4','E4','F4','G4','A4','B4','C5','D5','E5','F5'
     ];
@@ -236,13 +241,38 @@
       'B2': 18, 'A2': 19, 'G2': 20
     };
 
-    // Acronyms (Mnemonics) to display on the far right
+    // Organized Mnemonic Data Structure mapping note to Column Index & Word
+    // Col 0: Treble Lines (EGBDF) | Col 1: Treble Spaces (FACE)
+    // Col 2: Bass Lines (GBDFA)   | Col 3: Bass Spaces (ACEG)
     const allMnemonics = {
-      'F5': 'Fine',  'D5': 'Does', 'B4': 'Boy',  'G4': 'Good', 'E4': 'Every', // Treble Lines
-      'E5': 'E',     'C5': 'C',    'A4': 'A',    'F4': 'F',                   // Treble Spaces
-      'C4': 'Middle C',                                                       // Center
-      'A3': 'Always','F3': 'Fine', 'D3': 'Do',   'B2': 'Boys', 'G2': 'Good',  // Bass Lines
-      'G3': 'Grass', 'E3': 'Eat',  'C3': 'Cows', 'A2': 'All'                  // Bass Spaces
+      // Treble Lines (Every Good Boy Does Fine) -> Col 0
+      'E4': { col: 0, word: 'Every', color: '#2563eb' },
+      'G4': { col: 0, word: 'Good', color: '#2563eb' },
+      'B4': { col: 0, word: 'Boy', color: '#2563eb' },
+      'D5': { col: 0, word: 'Does', color: '#2563eb' },
+      'F5': { col: 0, word: 'Fine', color: '#2563eb' },
+
+      // Treble Spaces (F-A-C-E) -> Col 1
+      'F4': { col: 1, word: 'F (Face)', color: '#059669' },
+      'A4': { col: 1, word: 'A (fAce)', color: '#059669' },
+      'C5': { col: 1, word: 'C (faCe)', color: '#059669' },
+      'E5': { col: 1, word: 'E (facE)', color: '#059669' },
+
+      // Bass Lines (Good Boys Do Fine Always) -> Col 2
+      'G2': { col: 2, word: 'Good', color: '#7c3aed' },
+      'B2': { col: 2, word: 'Boys', color: '#7c3aed' },
+      'D3': { col: 2, word: 'Do', color: '#7c3aed' },
+      'F3': { col: 2, word: 'Fine', color: '#7c3aed' },
+      'A3': { col: 2, word: 'Always', color: '#7c3aed' },
+
+      // Bass Spaces (All Cows Eat Grass) -> Col 3
+      'A2': { col: 3, word: 'All', color: '#db2777' },
+      'C3': { col: 3, word: 'Cows', color: '#db2777' },
+      'E3': { col: 3, word: 'Eat', color: '#db2777' },
+      'G3': { col: 3, word: 'Grass', color: '#db2777' },
+
+      // Center Middle C
+      'C4': { col: -1, word: 'Middle C', color: '#475569' }
     };
 
     const noteFrequencies = {
@@ -302,17 +332,16 @@
       if (!svg) return;
       svg.innerHTML = '';
 
-      // Set staff line bounds (X: 80 to 920 for notes; 950+ reserved for separated acronym list)
-      const STAFF_LINE_END = withLabels ? 940 : VIEWBOX_WIDTH - 30;
+      const STAFF_LINE_END = withLabels ? 820 : VIEWBOX_WIDTH - 30;
 
       // Draw 5 Lines each for Treble & Bass
       for (let i = 0; i < 5; i++) {
-        // Treble staff lines (steps 0, 2, 4, 6, 8)
+        // Treble staff lines
         svg.appendChild(createSVGElement('line', {
           x1: '80', y1: TREBLE_START_Y + (i * 2) * STEP_SIZE, x2: STAFF_LINE_END, y2: TREBLE_START_Y + (i * 2) * STEP_SIZE,
           stroke: '#cbd5e1', 'stroke-width': '2'
         }));
-        // Bass staff lines (steps 12, 14, 16, 18, 20)
+        // Bass staff lines
         svg.appendChild(createSVGElement('line', {
           x1: '80', y1: TREBLE_START_Y + (12 + i * 2) * STEP_SIZE, x2: STAFF_LINE_END, y2: TREBLE_START_Y + (12 + i * 2) * STEP_SIZE,
           stroke: '#cbd5e1', 'stroke-width': '2'
@@ -334,14 +363,35 @@
       bassClef.textContent = '𝄢';
       svg.appendChild(bassClef);
 
-      // Render Notes
+      // Render Column Headers for Learn Mode
+      if (withLabels) {
+        const colXPositions = [860, 1000, 1140, 1280];
+        const headers = ['Treble Lines', 'Treble Spaces', 'Bass Lines', 'Bass Spaces'];
+
+        headers.forEach((hdr, i) => {
+          const text = createSVGElement('text', {
+            x: colXPositions[i], y: TREBLE_START_Y - 20,
+            'text-anchor': 'start', class: 'col-header'
+          });
+          text.textContent = hdr;
+          svg.appendChild(text);
+
+          // Vertical Column Separator Line
+          svg.appendChild(createSVGElement('line', {
+            x1: colXPositions[i] - 12, y1: TREBLE_START_Y - 30,
+            x2: colXPositions[i] - 12, y2: TREBLE_START_Y + 21 * STEP_SIZE,
+            stroke: '#f1f5f9', 'stroke-width': '1.5'
+          }));
+        });
+      }
+
+      // Render Notes & Acronyms
       const drawNote = (noteName, xIndex, totalNotes) => {
         const step = unifiedSteps[noteName];
         if (step === undefined) return;
         const y = TREBLE_START_Y + step * STEP_SIZE;
 
-        // Spread notes cleanly between x=120 and x=900
-        const x = (totalNotes === 1) ? 500 : 120 + (xIndex * (780 / (totalNotes - 1)));
+        const x = (totalNotes === 1) ? 450 : 110 + (xIndex * (680 / (totalNotes - 1)));
 
         // Ledger Line for Middle C (step 10)
         if (step === 10) {
@@ -355,7 +405,7 @@
         svg.appendChild(createSVGElement('ellipse', { cx: x, cy: y, rx: '16', ry: '11', fill: '#1f2937' }));
 
         if (withLabels) {
-          // Note letter inside whole note head (single label, no octave numbers)
+          // Note letter inside note head
           const letter = noteName.replace(/\d/, '');
           const noteLabel = createSVGElement('text', { 
             x: x, y: y, 
@@ -365,21 +415,24 @@
           noteLabel.textContent = letter;
           svg.appendChild(noteLabel);
 
-          // Far-right Acronym Legend column (separated from note heads)
+          // Acronym rendering in 4 distinct indented columns
           const mnemObj = allMnemonics[noteName];
           if (mnemObj) {
-            // Draw a subtle dotted connection line from note to far right acronym list
+            const colXPositions = [860, 1000, 1140, 1280];
+            let targetX = (mnemObj.col >= 0) ? colXPositions[mnemObj.col] : 840;
+
+            // Dotted horizontal guideline connecting notehead to column
             svg.appendChild(createSVGElement('line', {
-              x1: 955, y1: y, x2: 975, y2: y,
-              stroke: '#cbd5e1', 'stroke-width': '1.5', 'stroke-dasharray': '2,2'
+              x1: 825, y1: y, x2: targetX - 8, y2: y,
+              stroke: '#e2e8f0', 'stroke-width': '1', 'stroke-dasharray': '2,2'
             }));
 
             const mnemText = createSVGElement('text', { 
-              x: 985, y: y, 
+              x: targetX, y: y, 
               'text-anchor': 'start', 'dominant-baseline': 'central',
-              class: 'mnemonic-text'
+              class: 'mnemonic-text', fill: mnemObj.color
             });
-            mnemText.textContent = mnemObj;
+            mnemText.textContent = mnemObj.word;
             svg.appendChild(mnemText);
           }
         }
