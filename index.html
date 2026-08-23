@@ -20,7 +20,7 @@
     }
     .staff-svg {
       width: 100%;
-      min-width: 800px;
+      min-width: 1200px;
       height: auto;
       display: block;
     }
@@ -35,8 +35,8 @@
     }
     .piano-keys {
       display: flex;
-      gap: 8px;
-      justify-content: center;
+      gap: 4px;
+      justify-content: flex-start;
       min-width: fit-content;
       padding: 10px;
       align-items: flex-end;
@@ -46,11 +46,11 @@
       display: inline-block;
     }
     .white-key {
-      width: 50px;
-      height: 200px;
+      width: 42px;
+      height: 180px;
       background: white;
       border: 2px solid #333;
-      border-radius: 0 0 8px 8px;
+      border-radius: 0 0 6px 6px;
       cursor: pointer;
       position: relative;
       z-index: 1;
@@ -63,21 +63,18 @@
     .white-key:hover { background: #f0f0f0; }
     .white-key.active { background: #fbbf24; }
     .black-key {
-      width: 32px;
-      height: 130px;
+      width: 26px;
+      height: 115px;
       background: #1f2937;
       border: 2px solid #000;
-      border-radius: 0 0 6px 6px;
+      border-radius: 0 0 5px 5px;
       cursor: pointer;
       position: absolute;
       top: 0;
-      left: calc(100% - 18px);
+      left: calc(100% - 14px);
       z-index: 2;
       box-shadow: 0 6px 10px rgba(0,0,0,0.25);
       transition: all 0.1s;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
     }
     .black-key:hover { background: #374151; }
     .black-key.active { background: #fbbf24; }
@@ -86,7 +83,7 @@
       bottom: 8px;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 13px;
+      font-size: 12px;
       font-weight: bold;
       color: #333;
       pointer-events: none;
@@ -140,7 +137,7 @@
       pointer-events: none;
     }
     .mnemonic-text {
-      font-size: 13px;
+      font-size: 11px;
       fill: #4f46e5;
       font-weight: 700;
       font-family: sans-serif;
@@ -149,8 +146,8 @@
     @media (max-width: 640px) {
       .practice-header { flex-direction: column; align-items: flex-start; }
       .practice-header > div:last-child { align-self: flex-end; }
-      .white-key { width: 40px; height: 150px; }
-      .black-key { width: 26px; height: 100px; left: calc(100% - 14px); }
+      .white-key { width: 36px; height: 150px; }
+      .black-key { width: 22px; height: 95px; left: calc(100% - 12px); }
     }
   </style>
 </head>
@@ -160,7 +157,7 @@
     <header class="bg-white border-b border-slate-200 px-4 py-6 sticky top-0 z-20">
       <div class="max-w-6xl mx-auto">
         <h1 class="text-2xl font-bold text-slate-900">Piano Theory Pro</h1>
-        <p class="text-sm text-slate-600 mt-1">Learn to read musical notes</p>
+        <p class="text-sm text-slate-600 mt-1">Complete Grand Staff & Keyboard Scale</p>
       </div>
     </header>
 
@@ -170,15 +167,15 @@
         <!-- Learn Section -->
         <section id="learn-view" class="space-y-8">
           <div>
-            <h2 class="text-lg font-bold text-slate-900 mb-2">Grand Staff - Full Overview</h2>
-            <p class="text-sm text-slate-600 mb-4">Complete scale flowing from Bass to Treble, centered around Middle C.</p>
+            <h2 class="text-lg font-bold text-slate-900 mb-2">Grand Staff - Full Scale</h2>
+            <p class="text-sm text-slate-600 mb-4">Complete scale flowing from Bass (D2) to Treble (B5) with Middle C at center.</p>
             <div class="staff-container">
-              <svg id="grand-staff-svg" class="staff-svg" viewBox="0 0 1000 450" preserveAspectRatio="xMidYMid meet"></svg>
+              <svg id="grand-staff-svg" class="staff-svg" viewBox="0 0 1400 480" preserveAspectRatio="xMidYMid meet"></svg>
             </div>
           </div>
           <div>
             <h2 class="text-lg font-bold text-slate-900 mb-2">Piano Keyboard</h2>
-            <p class="text-sm text-slate-600 mb-4">Click keys to hear the notes</p>
+            <p class="text-sm text-slate-600 mb-4">Click keys to play full scale notes</p>
             <div class="piano-container" id="piano-container"></div>
           </div>
         </section>
@@ -188,14 +185,13 @@
           <div class="practice-header">
             <div>
               <h2 class="text-lg font-bold text-slate-900">Practice Mode</h2>
-              <p class="text-sm text-slate-600 mt-1">Identify the letter of the note shown on the staff</p>
+              <p class="text-sm text-slate-600 mt-1">Identify the note letter shown on the staff</p>
             </div>
             <div class="text-sm text-slate-600">Score: <span id="score" class="font-bold">0</span> / <span id="total">0</span></div>
           </div>
 
-          <!-- Single Practice Grand Staff -->
           <div class="staff-container">
-            <svg id="practice-staff" class="staff-svg" viewBox="0 0 1000 450" preserveAspectRatio="xMidYMid meet"></svg>
+            <svg id="practice-staff" class="staff-svg" viewBox="0 0 1400 480" preserveAspectRatio="xMidYMid meet"></svg>
           </div>
 
           <button id="btn-play-sound" class="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 active:bg-blue-800 transition min-h-12">
@@ -204,15 +200,12 @@
 
           <div class="feedback" id="feedback"></div>
 
-          <!-- Changed to a 7-button layout for just A-G -->
-          <div id="practice-buttons" class="grid grid-cols-4 sm:grid-cols-7 gap-2 sm:gap-3">
-            <!-- Buttons dynamically generated -->
-          </div>
+          <div id="practice-buttons" class="grid grid-cols-4 sm:grid-cols-7 gap-2 sm:gap-3"></div>
         </section>
       </div>
     </main>
 
-    <!-- Bottom Navigation -->
+    <!-- Navigation -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 py-3 z-30">
       <div class="max-w-6xl mx-auto flex gap-3">
         <button id="btn-learn" class="flex-1 py-3 px-4 rounded-lg font-semibold transition bg-indigo-600 text-white active:bg-indigo-700 min-h-12">
@@ -226,42 +219,51 @@
   </div>
 
   <script>
-    const VIEWBOX_WIDTH = 1000;
-    const VIEWBOX_HEIGHT = 450;
-    
-    // Core placement math
-    const TREBLE_START_Y = 60; // Top line of Treble Staff (F5)
-    const STEP_SIZE = 15;      // Distance between a line and a space
-    
-    // Using one unified step system starting from Treble top line (F5 = 0)
+    const VIEWBOX_WIDTH = 1400;
+    const VIEWBOX_HEIGHT = 480;
+    const TREBLE_START_Y = 100; // F5 line position
+    const STEP_SIZE = 14;       // Vertical distance per step
+
+    // Unified diatonic step mapping from top to bottom (F5 = step 0)
     const unifiedSteps = {
-      'C5': 3, 'B4': 4, 'A4': 5, 'G4': 6, 'F4': 7, 'E4': 8, 'D4': 9, 
-      'C4': 10, // EXACT Middle
-      'B3': 11, 'A3': 12, 'G3': 13, 'F3': 14, 'E3': 15, 'D3': 16, 'C3': 17
+      'B5': -3, 'A5': -2, 'G5': -1, 'F5': 0, 'E5': 1, 'D5': 2, 'C5': 3,
+      'B4': 4,  'A4': 5,  'G4': 6, 'F4': 7, 'E4': 8, 'D4': 9,
+      'C4': 10, // Exact Middle C
+      'B3': 11, 'A3': 12, 'G3': 13, 'F3': 14, 'E3': 15, 'D3': 16, 'C3': 17,
+      'B2': 18, 'A2': 19, 'G2': 20, 'F2': 21, 'E2': 22, 'D2': 23
     };
 
-    const allScaleNotes = ['C3','D3','E3','F3','G3','A3','B3','C4','D4','E4','F4','G4','A4','B4','C5'];
+    // Full sequential scale array across both staves
+    const allScaleNotes = [
+      'D2','E2','F2','G2','A2','B2','C3','D3','E3','F3','G3','A3','B3',
+      'C4',
+      'D4','E4','F4','G4','A4','B4','C5','D5','E5','F5','G5','A5','B5'
+    ];
 
-    // Mnemonic text array
+    // Acronyms (Mnemonics) positioned directly above/below noteheads
     const allMnemonics = {
-      'C3': 'Cows', 'D3': 'Do', 'E3': 'Eat', 'F3': 'Fine', 'G3': 'Grass',
-      'A3': 'Always', 'B3': '', 'C4': 'Middle', 'D4': '', 'E4': 'Every',
-      'F4': 'Face', 'G4': 'Good', 'A4': 'A', 'B4': 'Boy', 'C5': 'C'
+      'G2': 'Good', 'B2': 'Boys', 'D3': 'Do', 'F3': 'Fine', 'A3': 'Always', // Bass Lines
+      'A2': 'All', 'C3': 'Cows', 'E3': 'Eat', 'G3': 'Grass',                 // Bass Spaces
+      'C4': 'Middle C',                                                      // Center
+      'E4': 'Every', 'G4': 'Good', 'B4': 'Boy', 'D5': 'Does', 'F5': 'Fine',  // Treble Lines
+      'F4': 'F', 'A4': 'A', 'C5': 'C', 'E5': 'E'                            // Treble Spaces
     };
-    
+
+    const noteFrequencies = {
+      'D2': 73.42,  'D#2': 77.78,  'E2': 82.41,  'F2': 87.31,  'F#2': 92.50,  'G2': 98.00,  'G#2': 103.83,
+      'A2': 110.00, 'A#2': 116.54, 'B2': 123.47, 'C3': 130.81, 'C#3': 138.59, 'D3': 146.83, 'D#3': 155.56,
+      'E3': 164.81, 'F3': 174.61,  'F#3': 185.00, 'G3': 196.00, 'G#3': 207.65, 'A3': 220.00, 'A#3': 233.08,
+      'B3': 246.94, 'C4': 261.63,  'C#4': 277.18, 'D4': 293.66, 'D#4': 311.13, 'E4': 329.63, 'F4': 349.23,
+      'F#4': 369.99, 'G4': 392.00, 'G#4': 415.30, 'A4': 440.00, 'A#4': 466.16, 'B4': 493.88, 'C5': 523.25,
+      'D5': 587.33, 'D#5': 622.25, 'E5': 659.25, 'F5': 698.46, 'F#5': 739.99, 'G5': 783.99, 'G#5': 830.61,
+      'A5': 880.00, 'A#5': 932.33, 'B5': 987.77
+    };
+
     let currentNote = null;
     let score = 0;
     let total = 0;
     let isAnswering = false;
     let audioContext = null;
-
-    const noteFrequencies = {
-      'C3': 130.81, 'C#3': 138.59, 'D3': 146.83, 'D#3': 155.56, 'E3': 164.81,
-      'F3': 174.61, 'F#3': 185.00, 'G3': 196.00, 'G#3': 207.65, 'A3': 220.00,
-      'A#3': 233.08, 'B3': 246.94, 'C4': 261.63, 'C#4': 277.18, 'D4': 293.66,
-      'D#4': 311.13, 'E4': 329.63, 'F4': 349.23, 'F#4': 369.99, 'G4': 392.00,
-      'G#4': 415.30, 'A4': 440.00, 'A#4': 466.16, 'B4': 493.88, 'C5': 523.25
-    };
 
     function ensureAudioContext() {
       if (!audioContext) {
@@ -303,75 +305,61 @@
       const svg = document.getElementById(svgId);
       if (!svg) return;
       svg.innerHTML = '';
-      
-      // Draw 5 Lines for Treble & Bass perfectly aligned
+
+      // Draw standard Treble & Bass Staff Lines (5 lines each)
       for (let i = 0; i < 5; i++) {
-        // Treble lines: steps 0, 2, 4, 6, 8
+        // Treble staff lines (steps 0, 2, 4, 6, 8)
         svg.appendChild(createSVGElement('line', {
-          x1: '80', y1: TREBLE_START_Y + (i * 2) * STEP_SIZE, x2: VIEWBOX_WIDTH - 20, y2: TREBLE_START_Y + (i * 2) * STEP_SIZE,
+          x1: '80', y1: TREBLE_START_Y + (i * 2) * STEP_SIZE, x2: VIEWBOX_WIDTH - 30, y2: TREBLE_START_Y + (i * 2) * STEP_SIZE,
           stroke: '#cbd5e1', 'stroke-width': '2'
         }));
-        // Bass lines: steps 12, 14, 16, 18, 20
+        // Bass staff lines (steps 12, 14, 16, 18, 20)
         svg.appendChild(createSVGElement('line', {
-          x1: '80', y1: TREBLE_START_Y + (12 + i * 2) * STEP_SIZE, x2: VIEWBOX_WIDTH - 20, y2: TREBLE_START_Y + (12 + i * 2) * STEP_SIZE,
+          x1: '80', y1: TREBLE_START_Y + (12 + i * 2) * STEP_SIZE, x2: VIEWBOX_WIDTH - 30, y2: TREBLE_START_Y + (12 + i * 2) * STEP_SIZE,
           stroke: '#cbd5e1', 'stroke-width': '2'
         }));
       }
 
-      // Connecting Bracket
+      // Connecting Bracket Line
       svg.appendChild(createSVGElement('line', {
         x1: '70', y1: TREBLE_START_Y, x2: '70', y2: TREBLE_START_Y + 20 * STEP_SIZE,
         stroke: '#475569', 'stroke-width': '3'
       }));
 
       // Clefs
-      const trebleClef = createSVGElement('text', { x: '20', y: TREBLE_START_Y + 105, 'font-size': '110', fill: '#64748b' });
+      const trebleClef = createSVGElement('text', { x: '20', y: TREBLE_START_Y + 95, 'font-size': '105', fill: '#64748b' });
       trebleClef.textContent = '𝄞';
       svg.appendChild(trebleClef);
 
-      const bassClef = createSVGElement('text', { x: '20', y: TREBLE_START_Y + 245, 'font-size': '100', fill: '#64748b' });
+      const bassClef = createSVGElement('text', { x: '20', y: TREBLE_START_Y + 230, 'font-size': '95', fill: '#64748b' });
       bassClef.textContent = '𝄢';
       svg.appendChild(bassClef);
 
-      // Render Note function
+      // Function to render whole notes (No Stems)
       const drawNote = (noteName, xIndex, totalNotes) => {
         const step = unifiedSteps[noteName];
         if (step === undefined) return;
         const y = TREBLE_START_Y + step * STEP_SIZE;
 
-        // X placement logic (centered if single note, spread if scale)
-        let x;
-        if (totalNotes === 1) {
-          x = VIEWBOX_WIDTH / 2;
-        } else {
-          x = 130 + (xIndex * ((VIEWBOX_WIDTH - 200) / (totalNotes - 1)));
-        }
+        let x = (totalNotes === 1) ? VIEWBOX_WIDTH / 2 : 115 + (xIndex * ((VIEWBOX_WIDTH - 160) / (totalNotes - 1)));
 
-        // Only C4 (Middle C) needs a ledger line in this specific range
-        if (step === 10) {
+        // Ledger lines for notes outside main staves
+        const drawLedger = (ly) => {
           svg.appendChild(createSVGElement('line', {
-            x1: x - 26, y1: y, x2: x + 26, y2: y,
+            x1: x - 22, y1: ly, x2: x + 22, y2: ly,
             stroke: '#1f2937', 'stroke-width': '2'
           }));
-        }
+        };
 
-        // Note Head
-        svg.appendChild(createSVGElement('ellipse', { cx: x, cy: y, rx: '17', ry: '12', fill: '#1f2937' }));
+        if (step === 10) drawLedger(TREBLE_START_Y + 10 * STEP_SIZE); // Middle C
+        if (step <= -2) drawLedger(TREBLE_START_Y - 2 * STEP_SIZE);   // High A5/B5 ledger
+        if (step >= 22) drawLedger(TREBLE_START_Y + 22 * STEP_SIZE);  // Low E2/D2 ledger
 
-        // Standard stem direction: Up if below middle staff lines
-        const isStemUp = (step > 4 && step <= 10) || (step > 16);
-        if (isStemUp) {
-          svg.appendChild(createSVGElement('line', {
-            x1: x + 15, y1: y, x2: x + 15, y2: y - 45, stroke: '#1f2937', 'stroke-width': '2'
-          }));
-        } else {
-          svg.appendChild(createSVGElement('line', {
-            x1: x - 15, y1: y, x2: x - 15, y2: y + 45, stroke: '#1f2937', 'stroke-width': '2'
-          }));
-        }
+        // Whole Note head (NO STEMS AT ALL)
+        svg.appendChild(createSVGElement('ellipse', { cx: x, cy: y, rx: '16', ry: '11', fill: '#1f2937' }));
 
         if (withLabels) {
-          // Inner Note Letter (e.g. "C" instead of "C4")
+          // Inner Note Letter
           const letter = noteName.replace(/\d/, '');
           const noteLabel = createSVGElement('text', { 
             x: x, y: y, 
@@ -381,12 +369,14 @@
           noteLabel.textContent = letter;
           svg.appendChild(noteLabel);
 
-          // Side Mnemonic text placed cleanly to the right
+          // Acronym text positioned clearly ABOVE or BELOW the notehead to prevent overlap
           const mnemObj = allMnemonics[noteName];
           if (mnemObj) {
+            const isAbove = (step % 2 === 0); // Alternate placement based on line/space
+            const mnemY = isAbove ? y - 20 : y + 22;
             const mnemText = createSVGElement('text', { 
-              x: x + 28, y: y, 
-              'text-anchor': 'start', 'dominant-baseline': 'central',
+              x: x, y: mnemY, 
+              'text-anchor': 'middle', 'dominant-baseline': 'central',
               class: 'mnemonic-text'
             });
             mnemText.textContent = mnemObj;
@@ -407,12 +397,20 @@
       const pianoDiv = document.createElement('div');
       pianoDiv.className = 'piano-keys';
 
-      const whiteNotes = ['C3','D3','E3','F3','G3','A3','B3','C4','D4','E4','F4','G4','A4','B4','C5'];
+      const whiteNotes = [
+        'D2','E2','F2','G2','A2','B2',
+        'C3','D3','E3','F3','G3','A3','B3',
+        'C4',
+        'D4','E4','F4','G4','A4','B4',
+        'C5','D5','E5','F5','G5','A5','B5'
+      ];
       const blackAfter = {
+        'D2':'D#2', 'F2':'F#2', 'G2':'G#2', 'A2':'A#2',
         'C3':'C#3', 'D3':'D#3', 'F3':'F#3', 'G3':'G#3', 'A3':'A#3',
-        'C4':'C#4', 'D4':'D#4', 'F4':'F#4', 'G4':'G#4', 'A4':'A#4'
+        'C4':'C#4', 'D4':'D#4', 'F4':'F#4', 'G4':'G#4', 'A4':'A#4',
+        'C5':'C#5', 'D5':'D#5', 'F5':'F#5', 'G5':'G#5', 'A5':'A#5'
       };
-      
+
       whiteNotes.forEach(note => {
         const wrapper = document.createElement('div');
         wrapper.className = 'key-wrapper';
@@ -420,21 +418,19 @@
         const key = document.createElement('div');
         key.className = 'white-key';
         key.setAttribute('data-note', note);
-        key.setAttribute('role', 'button');
         
         const label = document.createElement('div');
         label.className = 'key-label';
-        // Strip out the numbers to clean up UI
         label.textContent = note.replace(/\d/, ''); 
         key.appendChild(label);
-        
-        key.addEventListener('click', (e) => {
+
+        key.addEventListener('click', () => {
           ensureAudioContext();
           playNote(note);
           key.classList.add('active');
           setTimeout(() => key.classList.remove('active'), 200);
         });
-        
+
         wrapper.appendChild(key);
 
         const blackName = blackAfter[note];
@@ -460,10 +456,8 @@
     function createPracticeButtons() {
       const container = document.getElementById('practice-buttons');
       container.innerHTML = '';
-      
-      // Just 7 letters, much less confusing!
       const noteLetters = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
-      
+
       noteLetters.forEach(letter => {
         const button = document.createElement('button');
         button.className = 'btn-note note-option';
@@ -481,7 +475,7 @@
       document.getElementById('btn-learn').classList.remove('bg-slate-100', 'text-slate-700');
       document.getElementById('btn-practice').classList.add('bg-slate-100', 'text-slate-700');
       document.getElementById('btn-practice').classList.remove('bg-indigo-600', 'text-white');
-      
+
       renderGrandStaff('grand-staff-svg', { withLabels: true });
       createPiano();
     }
@@ -504,14 +498,10 @@
     function nextQuestion() {
       isAnswering = false;
       currentNote = allScaleNotes[Math.floor(Math.random() * allScaleNotes.length)];
-      
       renderGrandStaff('practice-staff', { highlightNote: currentNote });
-      
       document.getElementById('feedback').textContent = '';
       document.getElementById('feedback').className = 'feedback';
-      
       document.querySelectorAll('.btn-note').forEach(btn => btn.classList.remove('active'));
-      
       setTimeout(() => playNote(currentNote), 300);
     }
 
@@ -519,11 +509,10 @@
       if (isAnswering) return;
       isAnswering = true;
       total++;
-      
+
       const selectedBtn = document.querySelector(`#practice-buttons [data-letter="${selectedLetter}"]`);
       if (selectedBtn) selectedBtn.classList.add('active');
 
-      // Check if letter guessed matches note (ignoring octave number)
       const correctLetter = currentNote.replace(/\d/, '');
 
       if (selectedLetter === correctLetter) {
@@ -550,7 +539,6 @@
       }
     });
 
-    // Initialize view
     showLearn();
   </script>
 </body>
