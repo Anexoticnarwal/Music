@@ -12,28 +12,27 @@
     * { box-sizing: border-box; }
     body {
       font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-      background-color: #0f172a;
-      color: #f8fafc;
+      background-color: #ffffff;
+      color: #0f172a;
     }
     
-    .glass-card {
-      background: rgba(30, 41, 59, 0.7);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+    .card-box {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
       border-radius: 16px;
-      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.08);
     }
 
     .staff-container {
       width: 100%;
       overflow-x: auto;
       scrollbar-width: thin;
-      scrollbar-color: #334155 #0f172a;
+      scrollbar-color: #94a3b8 #f1f5f9;
     }
     
     .staff-svg {
       width: 100%;
-      min-width: 1200px;
+      min-width: 950px;
       height: auto;
       display: block;
     }
@@ -43,7 +42,7 @@
       overflow-x: auto;
       padding: 10px 0;
       scrollbar-width: thin;
-      scrollbar-color: #334155 #0f172a;
+      scrollbar-color: #94a3b8 #f1f5f9;
     }
 
     .piano-keys {
@@ -62,13 +61,13 @@
     .white-key {
       width: 44px;
       height: 180px;
-      background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+      background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
       border: 1px solid #94a3b8;
       border-radius: 0 0 8px 8px;
       cursor: pointer;
       position: relative;
       z-index: 1;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), inset 0 -4px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), inset 0 -4px 4px rgba(0,0,0,0.03);
       transition: all 0.12s ease;
       display: flex;
       align-items: flex-end;
@@ -78,14 +77,13 @@
     }
 
     .white-key:hover {
-      background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
+      background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%);
     }
 
     .white-key.active {
       background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
-      border-color: #0284c7;
+      border-color: #0369a1;
       transform: translateY(2px);
-      box-shadow: 0 2px 3px rgba(0,0,0,0.4);
     }
 
     .white-key.active .key-label {
@@ -103,7 +101,7 @@
       top: 0;
       left: calc(100% - 14px);
       z-index: 2;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5), inset 0 -2px 3px rgba(255,255,255,0.2);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       transition: all 0.12s ease;
       user-select: none;
     }
@@ -129,37 +127,33 @@
       font-weight: 700;
       font-size: 18px;
       border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(30, 41, 59, 0.8);
-      color: #f8fafc;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #1e293b;
       cursor: pointer;
       transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
       touch-action: manipulation;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
     }
 
     .btn-note:hover {
-      border-color: #38bdf8;
-      color: #38bdf8;
+      border-color: #0284c7;
+      color: #0284c7;
       transform: translateY(-2px);
-      box-shadow: 0 6px 12px -2px rgba(56, 189, 248, 0.25);
-    }
-
-    .btn-note:active {
-      transform: translateY(0);
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
     }
 
     .btn-note.active {
-      background: #38bdf8;
-      color: #0f172a;
-      border-color: #38bdf8;
-      box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #0284c7;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
     }
 
     .col-header {
       font-size: 11px;
       font-weight: 800;
-      letter-spacing: 0.8px;
+      letter-spacing: 0.5px;
       text-transform: uppercase;
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
@@ -179,40 +173,38 @@
       pointer-events: none;
     }
 
-    /* Custom nav styling */
     .nav-tab {
-      position: relative;
       transition: all 0.2s;
     }
     
     .nav-tab.active-tab {
-      background: rgba(56, 189, 248, 0.15);
-      color: #38bdf8;
-      border-color: rgba(56, 189, 248, 0.4);
+      background: #0284c7;
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col antialiased">
+<body class="min-h-screen flex flex-col antialiased bg-white text-slate-900">
   
-  <!-- Top Navigation / Header -->
-  <header class="sticky top-0 z-30 bg-slate-900/80 backdrop-blur-md border-b border-slate-800 px-6 py-4">
+  <!-- Header -->
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 px-6 py-4">
     <div class="max-w-6xl mx-auto flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-500 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-sky-500/20">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white font-black text-xl shadow-md shadow-sky-500/20">
           𝄞
         </div>
         <div>
-          <h1 class="text-xl font-bold text-slate-100 tracking-tight">Piano Theory Pro</h1>
-          <p class="text-xs text-slate-400 font-medium">Grand Staff & Scale Guide</p>
+          <h1 class="text-xl font-bold text-slate-900 tracking-tight">Piano Theory Pro</h1>
+          <p class="text-xs text-slate-500 font-medium">Grand Staff & Scale Guide</p>
         </div>
       </div>
 
-      <!-- Segmented Control Nav -->
-      <nav class="flex bg-slate-800/80 p-1 rounded-xl border border-slate-700/50">
-        <button id="btn-learn" class="nav-tab active-tab px-5 py-2 rounded-lg text-sm font-semibold border border-transparent flex items-center gap-2">
+      <!-- Navigation Tabs -->
+      <nav class="flex bg-slate-100 p-1 rounded-xl border border-slate-200">
+        <button id="btn-learn" class="nav-tab active-tab px-5 py-2 rounded-lg text-sm font-semibold flex items-center gap-2">
           <span>📚</span> Learn Staff
         </button>
-        <button id="btn-practice" class="nav-tab px-5 py-2 rounded-lg text-sm font-semibold text-slate-400 border border-transparent hover:text-slate-200 flex items-center gap-2">
+        <button id="btn-practice" class="nav-tab px-5 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900 flex items-center gap-2">
           <span>🎯</span> Practice Mode
         </button>
       </nav>
@@ -223,33 +215,33 @@
   <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-8 space-y-8">
     
     <!-- LEARN VIEW -->
-    <section id="learn-view" class="space-y-8 transition-all duration-300">
+    <section id="learn-view" class="space-y-8">
       
       <!-- Staff Card -->
-      <div class="glass-card p-6">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-6 mb-6 border-b border-slate-800 gap-2">
+      <div class="card-box p-6 bg-white">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-6 mb-6 border-b border-slate-100 gap-2">
           <div>
-            <h2 class="text-lg font-bold text-slate-100">Interactive Grand Staff</h2>
-            <p class="text-sm text-slate-400">Scale notes from G2 to F5 with aligned mnemonic memory columns.</p>
+            <h2 class="text-lg font-bold text-slate-900">Interactive Grand Staff</h2>
+            <p class="text-sm text-slate-500">Scale notes from G2 to F5 with tight, clean mnemonic columns.</p>
           </div>
-          <div class="flex items-center gap-4 text-xs font-semibold">
-            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-sky-400"></span> Treble Lines</span>
-            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> Treble Spaces</span>
-            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-purple-400"></span> Bass Lines</span>
-            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-400"></span> Bass Spaces</span>
+          <div class="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-700">
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span> Treble Lines</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Treble Spaces</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span> Bass Lines</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Bass Spaces</span>
           </div>
         </div>
 
         <div class="staff-container">
-          <svg id="grand-staff-svg" class="staff-svg" viewBox="0 0 1450 430" preserveAspectRatio="xMidYMid meet"></svg>
+          <svg id="grand-staff-svg" class="staff-svg" viewBox="0 0 1020 430" preserveAspectRatio="xMidYMid meet"></svg>
         </div>
       </div>
 
       <!-- Piano Keyboard Card -->
-      <div class="glass-card p-6">
-        <div class="pb-4 mb-2 border-b border-slate-800">
-          <h2 class="text-lg font-bold text-slate-100">Piano Keyboard</h2>
-          <p class="text-sm text-slate-400">Click any key to listen to pitch and inspect placement.</p>
+      <div class="card-box p-6 bg-white">
+        <div class="pb-4 mb-2 border-b border-slate-100">
+          <h2 class="text-lg font-bold text-slate-900">Piano Keyboard</h2>
+          <p class="text-sm text-slate-500">Click any key to listen to pitch and inspect placement.</p>
         </div>
         <div class="piano-container" id="piano-container"></div>
       </div>
@@ -257,40 +249,40 @@
     </section>
 
     <!-- PRACTICE VIEW -->
-    <section id="practice-view" class="hidden space-y-6 transition-all duration-300">
+    <section id="practice-view" class="hidden space-y-6">
       
-      <div class="glass-card p-6">
-        <div class="flex items-center justify-between pb-6 mb-6 border-b border-slate-800">
+      <div class="card-box p-6 bg-white">
+        <div class="flex items-center justify-between pb-6 mb-6 border-b border-slate-100">
           <div>
-            <h2 class="text-lg font-bold text-slate-100">Note Identification Challenge</h2>
-            <p class="text-sm text-slate-400">Identify the note shown on the staff below.</p>
+            <h2 class="text-lg font-bold text-slate-900">Note Identification Challenge</h2>
+            <p class="text-sm text-slate-500">Identify the note shown on the staff below.</p>
           </div>
           
-          <div class="flex items-center gap-4 bg-slate-900/60 px-4 py-2 rounded-xl border border-slate-800">
+          <div class="flex items-center gap-4 bg-slate-50 px-4 py-2 rounded-xl border border-slate-200">
             <div class="text-right">
               <div class="text-xs uppercase tracking-wider text-slate-500 font-bold">Accuracy</div>
-              <div class="text-lg font-extrabold text-sky-400"><span id="score">0</span> / <span id="total">0</span></div>
+              <div class="text-lg font-extrabold text-sky-600"><span id="score">0</span> / <span id="total">0</span></div>
             </div>
           </div>
         </div>
 
         <!-- Practice Staff Container -->
-        <div class="staff-container mb-6 bg-slate-900/40 rounded-xl p-4 border border-slate-800/80">
-          <svg id="practice-staff" class="staff-svg" viewBox="0 0 1450 430" preserveAspectRatio="xMidYMid meet"></svg>
+        <div class="staff-container mb-6 bg-slate-50/50 rounded-xl p-4 border border-slate-100">
+          <svg id="practice-staff" class="staff-svg" viewBox="0 0 1020 430" preserveAspectRatio="xMidYMid meet"></svg>
         </div>
 
         <div class="flex flex-col sm:flex-row gap-4 items-center justify-between max-w-xl mx-auto">
-          <button id="btn-play-sound" class="w-full sm:w-auto px-6 py-3 bg-slate-800 hover:bg-slate-700 active:bg-slate-800 text-sky-400 font-bold rounded-xl border border-slate-700 transition flex items-center justify-center gap-2 shadow-lg">
+          <button id="btn-play-sound" class="w-full sm:w-auto px-6 py-3 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-sky-700 font-bold rounded-xl border border-slate-200 transition flex items-center justify-center gap-2 shadow-sm">
             <span>🔊</span> Replay Sound
           </button>
 
-          <div class="min-h-[44px] flex items-center justify-center font-bold text-lg px-6 py-2 rounded-xl bg-slate-900/60 border border-slate-800/80 w-full sm:w-auto text-center" id="feedback">
+          <div class="min-h-[44px] flex items-center justify-center font-bold text-lg px-6 py-2 rounded-xl bg-slate-50 border border-slate-200 w-full sm:w-auto text-center" id="feedback">
             <span class="text-slate-500 text-sm font-normal">Select a note letter below</span>
           </div>
         </div>
 
         <!-- Note Selection Buttons -->
-        <div class="mt-8 pt-6 border-t border-slate-800">
+        <div class="mt-8 pt-6 border-t border-slate-100">
           <div class="text-xs font-bold text-slate-500 uppercase tracking-wider text-center mb-4">Choose Note</div>
           <div id="practice-buttons" class="grid grid-cols-7 gap-3 max-w-2xl mx-auto h-16"></div>
         </div>
@@ -301,7 +293,7 @@
   </main>
 
   <script>
-    const VIEWBOX_WIDTH = 1450;
+    const VIEWBOX_WIDTH = 1020;
     const TREBLE_START_Y = 80;  
     const STEP_SIZE = 14;       
 
@@ -316,38 +308,36 @@
       'B2': 18, 'A2': 19, 'G2': 20
     };
 
-    // Cleaned-up Acronym Data Structure
-    // Col 0: Treble Lines (EGBDF) | Col 1: Treble Spaces (FACE)
-    // Col 2: Bass Lines (GBDFA)   | Col 3: Bass Spaces (ACEG)
+    // Cleaned-up mnemonics with non-duplicated column headings & face descriptions added
     const allMnemonics = {
-      // Treble Lines -> Col 0
-      'E4': { col: 0, word: 'Every', color: '#38bdf8' },
-      'G4': { col: 0, word: 'Good', color: '#38bdf8' },
-      'B4': { col: 0, word: 'Boy', color: '#38bdf8' },
-      'D5': { col: 0, word: 'Does', color: '#38bdf8' },
-      'F5': { col: 0, word: 'Fine', color: '#38bdf8' },
+      // Treble Lines -> Col 0 (Every Good Boy Does Fine)
+      'E4': { col: 0, word: 'Every', color: '#0284c7' },
+      'G4': { col: 0, word: 'Good', color: '#0284c7' },
+      'B4': { col: 0, word: 'Boy', color: '#0284c7' },
+      'D5': { col: 0, word: 'Does', color: '#0284c7' },
+      'F5': { col: 0, word: 'Fine', color: '#0284c7' },
 
-      // Treble Spaces -> Col 1 (Just pure note letters forming F-A-C-E)
-      'F4': { col: 1, word: 'F', color: '#34d399' },
-      'A4': { col: 1, word: 'A', color: '#34d399' },
-      'C5': { col: 1, word: 'C', color: '#34d399' },
-      'E5': { col: 1, word: 'E', color: '#34d399' },
+      // Treble Spaces -> Col 1 (F-A-C-E with descriptive reminder text)
+      'F4': { col: 1, word: 'First (F)', color: '#059669' },
+      'A4': { col: 1, word: 'Above (A)', color: '#059669' },
+      'C5': { col: 1, word: 'Center (C)', color: '#059669' },
+      'E5': { col: 1, word: 'Edge (E)', color: '#059669' },
 
-      // Bass Lines -> Col 2
-      'G2': { col: 2, word: 'Good', color: '#c084fc' },
-      'B2': { col: 2, word: 'Boys', color: '#c084fc' },
-      'D3': { col: 2, word: 'Do', color: '#c084fc' },
-      'F3': { col: 2, word: 'Fine', color: '#c084fc' },
-      'A3': { col: 2, word: 'Always', color: '#c084fc' },
+      // Bass Lines -> Col 2 (Good Boys Do Fine Always)
+      'G2': { col: 2, word: 'Good', color: '#7c3aed' },
+      'B2': { col: 2, word: 'Boys', color: '#7c3aed' },
+      'D3': { col: 2, word: 'Do', color: '#7c3aed' },
+      'F3': { col: 2, word: 'Fine', color: '#7c3aed' },
+      'A3': { col: 2, word: 'Always', color: '#7c3aed' },
 
-      // Bass Spaces -> Col 3
-      'A2': { col: 3, word: 'All', color: '#fb7185' },
-      'C3': { col: 3, word: 'Cows', color: '#fb7185' },
-      'E3': { col: 3, word: 'Eat', color: '#fb7185' },
-      'G3': { col: 3, word: 'Grass', color: '#fb7185' },
+      // Bass Spaces -> Col 3 (All Cows Eat Grass)
+      'A2': { col: 3, word: 'All', color: '#e11d48' },
+      'C3': { col: 3, word: 'Cows', color: '#e11d48' },
+      'E3': { col: 3, word: 'Eat', color: '#e11d48' },
+      'G3': { col: 3, word: 'Grass', color: '#e11d48' },
 
       // Middle C Anchor
-      'C4': { col: -1, word: 'Middle C', color: '#94a3b8' }
+      'C4': { col: -1, word: 'Middle C', color: '#64748b' }
     };
 
     const noteFrequencies = {
@@ -407,42 +397,42 @@
       if (!svg) return;
       svg.innerHTML = '';
 
-      const STAFF_LINE_END = withLabels ? 800 : VIEWBOX_WIDTH - 40;
+      const STAFF_LINE_END = withLabels ? 560 : VIEWBOX_WIDTH - 40;
 
       // Draw Staff Lines
       for (let i = 0; i < 5; i++) {
         // Treble staff lines
         svg.appendChild(createSVGElement('line', {
           x1: '80', y1: TREBLE_START_Y + (i * 2) * STEP_SIZE, x2: STAFF_LINE_END, y2: TREBLE_START_Y + (i * 2) * STEP_SIZE,
-          stroke: '#334155', 'stroke-width': '2'
+          stroke: '#cbd5e1', 'stroke-width': '2'
         }));
         // Bass staff lines
         svg.appendChild(createSVGElement('line', {
           x1: '80', y1: TREBLE_START_Y + (12 + i * 2) * STEP_SIZE, x2: STAFF_LINE_END, y2: TREBLE_START_Y + (12 + i * 2) * STEP_SIZE,
-          stroke: '#334155', 'stroke-width': '2'
+          stroke: '#cbd5e1', 'stroke-width': '2'
         }));
       }
 
       // Connecting Bracket Line
       svg.appendChild(createSVGElement('line', {
         x1: '70', y1: TREBLE_START_Y, x2: '70', y2: TREBLE_START_Y + 20 * STEP_SIZE,
-        stroke: '#64748b', 'stroke-width': '4', 'stroke-linecap': 'round'
+        stroke: '#94a3b8', 'stroke-width': '4', 'stroke-linecap': 'round'
       }));
 
       // Clef Symbols
-      const trebleClef = createSVGElement('text', { x: '20', y: TREBLE_START_Y + 96, 'font-size': '105', fill: '#475569' });
+      const trebleClef = createSVGElement('text', { x: '20', y: TREBLE_START_Y + 96, 'font-size': '105', fill: '#64748b' });
       trebleClef.textContent = '𝄞';
       svg.appendChild(trebleClef);
 
-      const bassClef = createSVGElement('text', { x: '22', y: TREBLE_START_Y + 232, 'font-size': '92', fill: '#475569' });
+      const bassClef = createSVGElement('text', { x: '22', y: TREBLE_START_Y + 232, 'font-size': '92', fill: '#64748b' });
       bassClef.textContent = '𝄢';
       svg.appendChild(bassClef);
 
-      // Render Column Headers for Learn Mode
+      // Render Tightly Packed Column Headers for Learn Mode (without repeated acronym names)
       if (withLabels) {
-        const colXPositions = [840, 990, 1140, 1290];
+        const colXPositions = [590, 695, 800, 905];
         const headers = ['Treble Lines', 'Treble Spaces', 'Bass Lines', 'Bass Spaces'];
-        const headerColors = ['#38bdf8', '#34d399', '#c084fc', '#fb7185'];
+        const headerColors = ['#0284c7', '#059669', '#7c3aed', '#e11d48'];
 
         headers.forEach((hdr, i) => {
           const text = createSVGElement('text', {
@@ -454,9 +444,9 @@
 
           // Subtle column divider line
           svg.appendChild(createSVGElement('line', {
-            x1: colXPositions[i] - 15, y1: TREBLE_START_Y - 30,
-            x2: colXPositions[i] - 15, y2: TREBLE_START_Y + 21 * STEP_SIZE,
-            stroke: '#1e293b', 'stroke-width': '1.5'
+            x1: colXPositions[i] - 12, y1: TREBLE_START_Y - 30,
+            x2: colXPositions[i] - 12, y2: TREBLE_START_Y + 21 * STEP_SIZE,
+            stroke: '#f1f5f9', 'stroke-width': '1.5'
           }));
         });
       }
@@ -467,21 +457,21 @@
         if (step === undefined) return;
         const y = TREBLE_START_Y + step * STEP_SIZE;
 
-        const x = (totalNotes === 1) ? 450 : 110 + (xIndex * (660 / (totalNotes - 1)));
+        const x = (totalNotes === 1) ? 340 : 110 + (xIndex * (420 / (totalNotes - 1)));
 
         // Ledger Line for Middle C (step 10)
         if (step === 10) {
           svg.appendChild(createSVGElement('line', {
             x1: x - 22, y1: y, x2: x + 22, y2: y,
-            stroke: '#38bdf8', 'stroke-width': '2.5'
+            stroke: '#0284c7', 'stroke-width': '2.5'
           }));
         }
 
         // Whole Note head
         svg.appendChild(createSVGElement('ellipse', { 
           cx: x, cy: y, rx: '15', ry: '10.5', 
-          fill: (totalNotes === 1) ? '#38bdf8' : '#f8fafc',
-          stroke: '#0f172a', 'stroke-width': '1'
+          fill: (totalNotes === 1) ? '#0284c7' : '#0f172a',
+          stroke: '#ffffff', 'stroke-width': '1'
         }));
 
         if (withLabels) {
@@ -491,21 +481,21 @@
             x: x, y: y, 
             'text-anchor': 'middle', 'dominant-baseline': 'central',
             class: 'note-letter',
-            fill: '#0f172a'
+            fill: '#ffffff'
           });
           noteLabel.textContent = letter;
           svg.appendChild(noteLabel);
 
-          // Acronym rendering in columns
+          // Acronym rendering in tightly spaced columns
           const mnemObj = allMnemonics[noteName];
           if (mnemObj) {
-            const colXPositions = [840, 990, 1140, 1290];
-            let targetX = (mnemObj.col >= 0) ? colXPositions[mnemObj.col] : 820;
+            const colXPositions = [590, 695, 800, 905];
+            let targetX = (mnemObj.col >= 0) ? colXPositions[mnemObj.col] : 575;
 
             // Dotted guideline to column
             svg.appendChild(createSVGElement('line', {
-              x1: 805, y1: y, x2: targetX - 8, y2: y,
-              stroke: '#334155', 'stroke-width': '1', 'stroke-dasharray': '3,3'
+              x1: 570, y1: y, x2: targetX - 6, y2: y,
+              stroke: '#cbd5e1', 'stroke-width': '1', 'stroke-dasharray': '2,2'
             }));
 
             const mnemText = createSVGElement('text', { 
@@ -602,8 +592,8 @@
       document.getElementById('learn-view').classList.remove('hidden');
       document.getElementById('practice-view').classList.add('hidden');
       
-      document.getElementById('btn-learn').className = 'nav-tab active-tab px-5 py-2 rounded-lg text-sm font-semibold border border-transparent flex items-center gap-2';
-      document.getElementById('btn-practice').className = 'nav-tab px-5 py-2 rounded-lg text-sm font-semibold text-slate-400 border border-transparent hover:text-slate-200 flex items-center gap-2';
+      document.getElementById('btn-learn').className = 'nav-tab active-tab px-5 py-2 rounded-lg text-sm font-semibold flex items-center gap-2';
+      document.getElementById('btn-practice').className = 'nav-tab px-5 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900 flex items-center gap-2';
 
       renderGrandStaff('grand-staff-svg', { withLabels: true });
       createPiano();
@@ -613,8 +603,8 @@
       document.getElementById('learn-view').classList.add('hidden');
       document.getElementById('practice-view').classList.remove('hidden');
       
-      document.getElementById('btn-practice').className = 'nav-tab active-tab px-5 py-2 rounded-lg text-sm font-semibold border border-transparent flex items-center gap-2';
-      document.getElementById('btn-learn').className = 'nav-tab px-5 py-2 rounded-lg text-sm font-semibold text-slate-400 border border-transparent hover:text-slate-200 flex items-center gap-2';
+      document.getElementById('btn-practice').className = 'nav-tab active-tab px-5 py-2 rounded-lg text-sm font-semibold flex items-center gap-2';
+      document.getElementById('btn-learn').className = 'nav-tab px-5 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900 flex items-center gap-2';
 
       score = 0;
       total = 0;
@@ -649,12 +639,12 @@
 
       if (selectedLetter === correctLetter) {
         score++;
-        fb.innerHTML = '<span class="text-emerald-400">✓ Correct!</span>';
+        fb.innerHTML = '<span class="text-emerald-600 font-bold">✓ Correct!</span>';
         document.getElementById('score').textContent = score;
         document.getElementById('total').textContent = total;
         setTimeout(nextQuestion, 1000);
       } else {
-        fb.innerHTML = `<span class="text-rose-400">✗ Incorrect. It's ${correctLetter}</span>`;
+        fb.innerHTML = `<span class="text-rose-600 font-bold">✗ Incorrect. It's ${correctLetter}</span>`;
         document.getElementById('total').textContent = total;
         setTimeout(nextQuestion, 1500);
       }
