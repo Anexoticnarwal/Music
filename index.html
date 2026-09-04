@@ -218,10 +218,10 @@
             <dl class="legend">
               <dt>Treble lines (E G B D F)</dt>
               <dd>Every Good Boy Does Fine</dd>
-              <dt>Treble spaces (F A C E)</dt>
-              <dd>FACE</dd>
               <dt>Bass lines (G B D F A)</dt>
               <dd>Good Boys Do Fine Always</dd>
+              <dt>Treble spaces (F A C E)</dt>
+              <dd>FACE</dd>
               <dt>Bass spaces (A C E G)</dt>
               <dd>All Cows Eat Grass</dd>
             </dl>
@@ -233,23 +233,6 @@
               <svg id="fifths-svg" class="fifths-svg" viewBox="0 0 240 240"></svg>
               <p class="fifths-text">
                 Start at <b>C</b> — no sharps or flats. Go <b>clockwise</b> and each key adds one sharp (C → G → D …). Go <b>counter-clockwise</b> and each key adds one flat (C → F → B♭ …). The two paths meet at the bottom, the key with the most sharps or flats.
-
-<br><br>
-
-<b>🔬 Detailed Breakdown:</b><br>
-• <b>The Structure:</b> It acts like a 12-hour clock. 12:00 is C major (neutral). Clockwise keys move up by a perfect fifth (7 semitones) adding one sharp (#) per step. Counter-clockwise keys drop by a fifth, adding one flat (♭) per step.<br>
-• <b>The Rings:</b> The outer ring shows Major keys (bright) and the inner ring shows Minor keys (dark). Keys sharing a column are "relative" partners using the exact same notes.<br>
-• <b>The Harmony:</b> Direct neighbors on the circle share 6 out of 7 notes, making musical transitions between them sound smooth and pleasant.
-
-<br><br>
-
-<b>👶 ELI5 Summary:</b><br>
-• Imagine 12 musical notes living in a circular neighborhood like a clock. C Major lives at the top and uses only white piano keys—no extra spices. Walking right adds one "sharp" spice per house, while walking left adds one "flat" spice. Houses sitting right next to each other are best friends who share almost all the same notes, making it easy to pop next door to safely change the mood of a song.
-
-<br><br>
-
-<b>🎵 Real-World Example:</b><br>
-If a musician is playing a song in <b>C Major</b> (0 sharps) and wants to change keys smoothly, they look next door on the circle to <b>G Major</b> (1 sharp). Because C Major and G Major share 6 out of 7 of the exact same notes, the shift sounds completely natural to your ears. If they tried to jump all the way across the circle to <b>F# Major</b> (6 sharps), it would sound incredibly jarring and out of place because they share almost no common notes.
               </p>
             </div>
           </div>
@@ -486,8 +469,8 @@ If a musician is playing a song in <b>C Major</b> (0 sharps) and wants to change
       const pianoDiv = document.createElement('div');
       pianoDiv.className = 'piano-keys';
 
-      const whiteNotes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4];
-      const blackAfter = { 'C4': 'C#4', 'D4': 'D#4', 'F4': 'F#4', 'G4': 'G#4', 'A4: 'A#4', B4};
+      const whiteNotes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4'];
+      const blackAfter = { 'C4': 'C#4', 'D4': 'D#4', 'F4': 'F#4', 'G4': 'G#4' };
 
       whiteNotes.forEach(note => {
         const wrapper = document.createElement('div');
