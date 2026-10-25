@@ -8,7 +8,10 @@
   <style>
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; }
-    body { background: #f8fafc; }
+    body {
+      background: #f8fafc;
+      overflow-x: hidden;
+    }
 
     .staff-block {
       background: white;
@@ -16,11 +19,17 @@
       padding: 16px;
       margin: 12px 0;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      overflow: hidden;
     }
     .staff-svg {
       width: 100%;
+      max-width: 900px;
       height: auto;
       display: block;
+      margin: 0 auto;
+    }
+    #practice-staff {
+      max-width: 500px;
     }
     .clef-label {
       font-size: 11px;
@@ -54,18 +63,21 @@
       margin: 16px 0;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
     .piano-keys {
       display: flex;
       gap: 4px;
       justify-content: center;
-      min-width: fit-content;
+      min-width: max-content;
       padding: 10px;
       align-items: flex-end;
+      flex-wrap: nowrap;
     }
     .key-wrapper {
       position: relative;
       display: inline-block;
+      flex: 0 0 auto;
     }
     .white-key {
       width: 46px;
@@ -189,6 +201,10 @@
       .practice-header > div:last-child { align-self: flex-end; }
       .white-key { width: 40px; height: 150px; }
       .black-key { width: 24px; height: 95px; left: calc(100% - 13px); }
+      .fifths-svg {
+        width: min(220px, 100%);
+        height: auto;
+      }
     }
   </style>
 </head>
@@ -202,7 +218,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="flex-1 overflow-auto px-4 py-6">
+    <main class="flex-1 overflow-y-auto overflow-x-hidden px-4 py-6">
       <div class="max-w-6xl mx-auto">
         <!-- Learn Section -->
         <section id="learn-view" class="space-y-2">
@@ -232,12 +248,12 @@
             <div class="fifths-row">
               <svg id="fifths-svg" class="fifths-svg" viewBox="0 0 240 240"></svg>
               <p class="fifths-text">
-                Start at <b>C</b> — no sharps or flats. Go <b>clockwise</b> and each key adds one sharp (C → G → D …). Go <b>counter-clockwise</b> and each key adds one flat (C → F → B♭ …). The two paths meet at the bottom, the key with the most sharps or flats.
+                Start at <b>C</b> — no sharps or flats. Go <b>clockwise</b> and each key adds one sharp (C → G → D …). Go <b>counter-clockwise</b> and each key adds one flat (C → F → B♭ ...).
               </p>
             </div>
           </div>
 
-          <h2 class="text-lg font-bold text-slate-900 pt-2">Piano Keyboard (C–A)</h2>
+          <h2 class="text-lg font-bold text-slate-900 pt-2">Piano Keyboard (C–B)</h2>
           <div class="piano-container" id="piano-container"></div>
         </section>
 
@@ -299,7 +315,7 @@
       'E3': 164.81, 'F3': 174.61,  'F#3': 185.00, 'G3': 196.00, 'G#3': 207.65, 'A3': 220.00, 'A#3': 233.08,
       'B3': 246.94, 'C4': 261.63,  'C#4': 277.18, 'D4': 293.66, 'D#4': 311.13, 'E4': 329.63, 'F4': 349.23,
       'F#4': 369.99, 'G4': 392.00, 'G#4': 415.30, 'A4': 440.00, 'A#4': 466.16, 'B4': 493.88, 'C5': 523.25,
-      'D5': 587.33, 'D#5': 622.25, 'E5': 659.25, 'F5': 698.46, 'F#5': 739.99, 'G5': 783.99, 'G#5': 830.61,
+      'C#5': 554.37, 'D5': 587.33, 'D#5': 622.25, 'E5': 659.25, 'F5': 698.46, 'F#5': 739.99, 'G5': 783.99, 'G#5': 830.61,
       'A5': 880.00, 'A#5': 932.33, 'B5': 987.77
     };
 
@@ -469,8 +485,8 @@
       const pianoDiv = document.createElement('div');
       pianoDiv.className = 'piano-keys';
 
-      const whiteNotes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4'];
-      const blackAfter = { 'C4': 'C#4', 'D4': 'D#4', 'F4': 'F#4', 'G4': 'G#4' };
+      const whiteNotes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F5', 'G5', 'A5', 'B5'];
+      const blackAfter = { 'C4': 'C#4', 'D4': 'D#4', 'F4': 'F#4', 'G4': 'G#4', 'A4': 'A#4', 'C5': 'C#5', 'D5': 'D#5', 'F5': 'F#5', 'G5': 'G#5', 'A5': 'A#5' };
 
       whiteNotes.forEach(note => {
         const wrapper = document.createElement('div');
