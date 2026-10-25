@@ -224,7 +224,7 @@
     <main class="flex-1 overflow-y-auto overflow-x-hidden px-4 py-6">
       <div class="max-w-6xl mx-auto">
         <section id="learn-view" class="space-y-2">
-          <h2 class="text-lg font-bold text-slate-900">Grand Staff</h2>
+          <h2 class="text-lg font-bold text-slate-900">Notes on the Staff</h2>
 
           <div class="staff-block">
             <div class="clef-label">Treble</div>
@@ -234,14 +234,14 @@
             <div class="clef-label">Bass</div>
             <svg id="bass-staff" class="staff-svg" viewBox="0 0 900 280" preserveAspectRatio="xMidYMid meet"></svg>
             <dl class="legend">
-              <dt>Treble lines (E G B D F)</dt>
-              <dd>Every Good Boy Does Fine</dd>
-              <dt>Bass lines (G B D F A)</dt>
-              <dd>Good Boys Do Fine Always</dd>
-              <dt>Treble spaces (F A C E)</dt>
-              <dd>FACE</dd>
-              <dt>Bass spaces (A C E G)</dt>
-              <dd>All Cows Eat Grass</dd>
+              <dt>Treble lines</dt>
+              <dd>E G B D F</dd>
+              <dt>Bass lines</dt>
+              <dd>G B D F A</dd>
+              <dt>Treble spaces</dt>
+              <dd>F A C E</dd>
+              <dt>Bass spaces</dt>
+              <dd>A C E G</dd>
             </dl>
           </div>
 
@@ -250,13 +250,13 @@
             <div class="fifths-row">
               <svg id="fifths-svg" class="fifths-svg" viewBox="0 0 240 240"></svg>
               <p class="fifths-text">
-                The <b>Circle of Fifths</b> is a map of key signatures. Going <b>clockwise</b>, each new key is a perfect fifth above the last and adds <b>one sharp</b>: C → G → D → A → E → B → F♯/G♭. Going <b>counter-clockwise</b>, each new key is a perfect fifth below and adds <b>one flat</b>: C → F → B♭ → E♭ → A♭ → D♭. <br><br>
-                <b>Example:</b> G major has one sharp (F♯), and F major has one flat (B♭). The relative minor of C major is A minor, which uses the same key signature: no sharps or flats. This makes the circle useful for finding key signatures, chord families, and the tonal center of a song.
+                The <b>Circle of Fifths</b> shows how keys are related. Moving clockwise adds one sharp each step. Moving counter-clockwise adds one flat each step. <br><br>
+                <b>Example:</b> C major has no sharps or flats, G major has one sharp, and F major has one flat. This helps you see key signatures and how songs often move between related keys.
               </p>
             </div>
           </div>
 
-          <h2 class="text-lg font-bold text-slate-900 pt-2">Piano Keyboard (C–B)</h2>
+          <h2 class="text-lg font-bold text-slate-900 pt-2">Piano Keyboard</h2>
           <div class="piano-container" id="piano-container"></div>
         </section>
 
@@ -284,10 +284,10 @@
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 py-3 z-30">
       <div class="max-w-6xl mx-auto flex gap-3">
         <button id="btn-learn" class="flex-1 py-3 px-4 rounded-lg font-semibold transition bg-indigo-600 text-white active:bg-indigo-700 min-h-12">
-          📚 Learn
+          Learn
         </button>
         <button id="btn-practice" class="flex-1 py-3 px-4 rounded-lg font-semibold transition bg-slate-100 text-slate-700 hover:bg-slate-200 active:bg-slate-300 min-h-12">
-          🎵 Practice
+          Practice
         </button>
       </div>
     </nav>
