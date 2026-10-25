@@ -67,10 +67,10 @@
     }
     .piano-keys {
       display: flex;
-      gap: 4px;
+      gap: 0;
       justify-content: center;
       min-width: max-content;
-      padding: 10px;
+      padding: 10px 4px 10px 4px;
       align-items: flex-end;
       flex-wrap: nowrap;
     }
@@ -78,12 +78,16 @@
       position: relative;
       display: inline-block;
       flex: 0 0 auto;
+      width: 46px;
+      height: 180px;
     }
     .white-key {
       width: 46px;
       height: 180px;
       background: white;
       border: 2px solid #333;
+      border-left-width: 1.5px;
+      border-right-width: 1.5px;
       border-radius: 0 0 6px 6px;
       cursor: pointer;
       position: relative;
@@ -105,7 +109,7 @@
       cursor: pointer;
       position: absolute;
       top: 0;
-      left: calc(100% - 15px);
+      left: 18px;
       z-index: 2;
       box-shadow: 0 6px 10px rgba(0,0,0,0.25);
       transition: all 0.1s;
@@ -200,7 +204,8 @@
       .practice-header { flex-direction: column; align-items: flex-start; }
       .practice-header > div:last-child { align-self: flex-end; }
       .white-key { width: 40px; height: 150px; }
-      .black-key { width: 24px; height: 95px; left: calc(100% - 13px); }
+      .black-key { width: 24px; height: 95px; left: 16px; }
+      .key-wrapper { width: 40px; height: 150px; }
       .fifths-svg {
         width: min(220px, 100%);
         height: auto;
@@ -486,7 +491,10 @@
       pianoDiv.className = 'piano-keys';
 
       const whiteNotes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F5', 'G5', 'A5', 'B5'];
-      const blackAfter = { 'C4': 'C#4', 'D4': 'D#4', 'F4': 'F#4', 'G4': 'G#4', 'A4': 'A#4', 'C5': 'C#5', 'D5': 'D#5', 'F5': 'F#5', 'G5': 'G#5', 'A5': 'A#5' };
+      const blackAfter = {
+        'C4': 'C#4', 'D4': 'D#4', 'F4': 'F#4', 'G4': 'G#4', 'A4': 'A#4',
+        'C5': 'C#5', 'D5': 'D#5', 'F5': 'F#5', 'G5': 'G#5', 'A5': 'A#5'
+      };
 
       whiteNotes.forEach(note => {
         const wrapper = document.createElement('div');
@@ -514,6 +522,7 @@
         if (blackName) {
           const blackKey = document.createElement('div');
           blackKey.className = 'black-key';
+          blackKey.title = blackName;
           blackKey.addEventListener('click', (e) => {
             e.stopPropagation();
             ensureAudioContext();
